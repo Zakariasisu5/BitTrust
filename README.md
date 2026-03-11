@@ -179,25 +179,137 @@ Repository Structure
 
 bittrust/
 │
-├── frontend/
-│   ├── components
-│   ├── pages
-│   └── wallet
-│
-├── backend/
-│   ├── api
-│   ├── reputation-engine
-│   └── blockchain-fetcher
-│
-├── smart-contracts/
-│   └── bittrust.clar
+├── README.md
+├── LICENSE
+├── .gitignore
+├── package.json
 │
 ├── docs/
-│   ├── frontend-docs
-│   ├── backend-docs
-│   └── smart-contract-docs
+│   │
+│   ├── architecture/
+│   │   ├── system-architecture.md
+│   │   ├── reputation-flow.md
+│   │
+│   ├── frontend/
+│   │   └── frontend-documentation.md
+│   │
+│   ├── backend/
+│   │   └── backend-reputation-engine.md
+│   │
+│   ├── ai/
+│   │   └── ai-engine-documentation.md
+│   │
+│   └── smart-contracts/
+│       └── clarity-contract-documentation.md
 │
-└── README.md
+│
+├── frontend/
+│   │
+│   ├── public/
+│   │   ├── logo.png
+│   │   └── favicon.ico
+│   │
+│   ├── src/
+│   │   │
+│   │   ├── components/
+│   │   │   ├── WalletConnect.jsx
+│   │   │   ├── ReputationCard.jsx
+│   │   │   ├── Leaderboard.jsx
+│   │   │   └── ScoreIndicator.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── WalletLookup.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   └── reputationService.js
+│   │   │
+│   │   ├── hooks/
+│   │   │   └── useWallet.js
+│   │   │
+│   │   ├── styles/
+│   │   │   └── globals.css
+│   │   │
+│   │   ├── utils/
+│   │   │   └── helpers.js
+│   │   │
+│   │   └── App.jsx
+│   │
+│   └── package.json
+│
+│
+├── backend/
+│   │
+│   ├── src/
+│   │   │
+│   │   ├── api/
+│   │   │   ├── reputationRoutes.js
+│   │   │   ├── walletRoutes.js
+│   │   │   └── leaderboardRoutes.js
+│   │   │
+│   │   ├── controllers/
+│   │   │   ├── reputationController.js
+│   │   │   └── walletController.js
+│   │   │
+│   │   ├── services/
+│   │   │   ├── blockchainFetcher.js
+│   │   │   ├── reputationCalculator.js
+│   │   │   └── scoreUpdater.js
+│   │   │
+│   │   ├── database/
+│   │   │   ├── db.js
+│   │   │   └── models/
+│   │   │       └── walletScore.js
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── logger.js
+│   │   │   └── validators.js
+│   │   │
+│   │   └── server.js
+│   │
+│   └── package.json
+│
+│
+├── ai-engine/
+│   │
+│   ├── models/
+│   │   ├── anomaly_detection_model.py
+│   │   └── trust_prediction_model.py
+│   │
+│   ├── data-processing/
+│   │   ├── feature_engineering.py
+│   │   └── wallet_behavior_analysis.py
+│   │
+│   ├── training/
+│   │   ├── train_model.py
+│   │   └── dataset_loader.py
+│   │
+│   └── inference/
+│       └── reputation_predictor.py
+│
+│
+├── smart-contracts/
+│   │
+│   ├── clarity/
+│   │   └── bittrust.clar
+│   │
+│   ├── deployments/
+│   │   └── deploy-contract.js
+│   │
+│   └── tests/
+│       └── contract-tests.js
+│
+│
+├── scripts/
+│   ├── seed-data.js
+│   └── update-reputation.js
+│
+│
+└── config/
+    ├── stacks-config.js
+    └── env.example
 
 
 ---
