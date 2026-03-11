@@ -172,11 +172,6 @@ wallet behavior analysis
 trust prediction models
 
 
-
----
-
-Repository Structure
-
 bittrust/
 │
 ├── README.md
