@@ -1,4 +1,4 @@
-BitTrust
+## BitTrust
 
 BitTrust is a decentralized reputation protocol built on Stacks that allows wallets and AI agents to verify trust before interacting in the Bitcoin ecosystem.
 
@@ -24,9 +24,10 @@ DeFi protocols struggle with risk evaluation
 sybil attacks become more common
 
 
-A transparent trust layer is needed.
+A transparent trust layer is needed
 
-![Uploading file_00000000b03871fd90c1a11fc795d20e.png…]()
+<img width="1024" height="1536" alt="file_00000000b03871fd90c1a11fc795d20e" src="https://github.com/user-attachments/assets/a2394f61-dca4-4dc9-96f0-f6001e3a073f" />
+
 
 
 ---
@@ -47,6 +48,8 @@ highly reliable
 
 
 The reputation data is stored on-chain through smart contracts for transparency and auditability.
+
+<img width="1024" height="1536" alt="file_0000000019fc71fdbe87a5cf801007c4" src="https://github.com/user-attachments/assets/9e473c01-fd61-4a26-ba02-34548b536c95" />
 
 
 ---
