@@ -26,6 +26,8 @@ sybil attacks become more common
 
 A transparent trust layer is needed.
 
+![Uploading file_00000000b03871fd90c1a11fc795d20e.png…]()
+
 
 ---
 
