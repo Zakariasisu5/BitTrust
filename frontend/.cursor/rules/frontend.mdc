@@ -1,0 +1,52 @@
+---
+description: "BitTrust frontend design guidelines, code rules, and component structures"
+globs: "src/**/*.{ts,tsx,css}"
+alwaysApply: false
+---
+
+# BitTrust Frontend Rules
+
+## 1. Project Info
+- **Project:** BitTrust (Decentralized reputation protocol on Stacks for AI agents and wallets)
+- **Concept:** Calculates on-chain trust scores monetized via x402 (HTTP 402 micro-payments).
+- **Vibe:** Institutional monitoring tool, credit bureau for bots. Serious, dark, matte (no glassmorphism).
+
+## 2. Code Quality & Standards
+- Write clean, strictly typed TypeScript code. Avoid `any` types.
+- Avoid deeply nested components. Extract complex logic into custom hooks.
+- Use meaningful, self-documenting variable and function names.
+
+## 3. File Structure
+- **No monolithic files.** Break UI down into isolated, reusable components.
+- Shared utilities go in `src/lib/`.
+- Hooks go in `src/hooks/`.
+- UI primitives go in `src/components/ui/`.
+- Next.js App Router rules apply (`app/page.tsx`, `app/layout.tsx`).
+
+## 4. UI Components (shadcn/ui)
+- Use **shadcn/ui** for UI primitives (buttons, cards, inputs, dialogs).
+- Combine shadcn components with standard Tailwind utility classes for layout.
+- Build UI by combining customizable, accessible components rather than writing custom CSS.
+
+## 5. Design Guidelines (Tailwind)
+- **Colors:**
+  - Background: `#020617` (main app)
+  - Cards: `#020817` / `#050816`
+  - Primary Accent: `#F7931A` (Bitcoin amber) — Hover `#C56F11`
+  - Secondary Accent: `#5546FF` (Purple)
+  - Semantic: `#10B981` (Success), `#FACC15` (Warning), `#EF4444` (Danger)
+  - Text: `#E5E7EB` (Main), `#9CA3AF` (Muted)
+- **Typography:** Inter or Satoshi, 14-15px base.
+- **Component Classes:**
+  - Cards: `rounded-xl bg-slate-900/60 border border-slate-800 shadow-sm`
+  - Primary Button: `bg-amber-500 hover:bg-amber-600 text-slate-950 font-medium rounded-lg`
+  - Secondary Button: `bg-slate-800 hover:bg-slate-700 text-slate-100`
+  - Badges: `rounded-full px-2.5 py-0.5 text-xs uppercase`
+  - Inputs: `bg-slate-900 border border-slate-700 focus:border-amber-500`
+
+## 6. Micro-UX & Interactivity
+- Single primary action per view (e.g., "Connect wallet" on Home).
+- Skeletons for loading states (no spinners).
+- Fast hover/focus transitions (150-200ms ease-out).
+- Empty States: Short and actionable (e.g., "No reputation yet. Start using DeFi protocols...").
+- Copy: Concrete, no hype. Make risk immediately obvious with colors and labels.
