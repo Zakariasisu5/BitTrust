@@ -38,7 +38,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     showConnect({
       appDetails: {
         name: "BitTrust",
-        icon: "/icon.png",
+        icon: window.location.origin + "/icon.png",
       },
       redirectTo: "/",
       onFinish: () => {
