@@ -7,7 +7,7 @@ The protocol analyzes blockchain activity and generates dynamic trust scores tha
 
 ---
 
-Problem
+## Problem
 
 As decentralized systems grow, trust becomes difficult to establish.
 
@@ -32,7 +32,7 @@ A transparent trust layer is needed
 
 ---
 
-Solution
+## Solution
 
 BitTrust provides a reputation scoring protocol that evaluates wallet behavior using blockchain data.
 
@@ -54,7 +54,7 @@ The reputation data is stored on-chain through smart contracts for transparency 
 
 ---
 
-Key Features
+## Key Features
 
 Wallet Reputation Scoring
 
@@ -79,7 +79,7 @@ Display trusted wallets and reputation history.
 
 ---
 
-Architecture
+## Architecture
 
 BitTrust consists of four major components:
 
@@ -103,7 +103,7 @@ Data anchored to Bitcoin through Stacks.
 
 ---
 
-Reputation Scoring Factors
+## Reputation Scoring Factors
 
 BitTrust evaluates wallets using several metrics:
 
@@ -125,20 +125,20 @@ These signals are used to produce a trust score between 0 and 100.
 
 ---
 
-Trust Score Levels
+## Trust Score Levels
 
 Score	Trust Level
 
-0 – 30	High Risk
-31 – 60	Medium Risk
-61 – 80	Trusted
+0 – 30	High Risk |  
+31 – 60	Medium Risk  |
+61 – 80	Trusted  |
 81 – 100	Highly Trusted
 
 
 
 ---
 
-Technology Stack
+## Technology Stack
 
 Frontend
 
@@ -175,7 +175,7 @@ trust prediction models
 
 ---
 
-Demo Workflow
+## Demo Workflow
 
 1. User connects wallet
 
@@ -202,7 +202,7 @@ Demo Workflow
 
 ---
 
-Use Cases
+## Use Cases
 
 BitTrust can be used in multiple ecosystems:
 
@@ -220,7 +220,7 @@ fraud detection systems
 
 ---
 
-MVP Goals (Hackathon)
+## MVP Goals (Hackathon)
 
 For the BUIDL Battle, the MVP includes:
 
@@ -238,7 +238,7 @@ AI behavior analysis
 
 ---
 
-Future Roadmap
+## Future Roadmap
 
 reputation NFTs
 
@@ -254,13 +254,13 @@ trust network graphs
 
 ---
 
-Team
+## Team
 
 BitTrust is built by a team of developers focused on creating a decentralized trust layer for the Bitcoin ecosystem.
 
 
 ---
 
-License
+## License
 
 MIT License
