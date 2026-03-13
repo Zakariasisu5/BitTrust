@@ -34,9 +34,9 @@ export default function Home() {
               <Image
                 src="/logo.png"
                 alt="BitTrust Logo"
-                width={200}
-                height={60}
-                className="h-auto w-40 object-contain"
+                width={400}
+                height={120}
+                className="h-auto w-80 object-contain"
                 priority
               />
             </div>
