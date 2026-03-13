@@ -24,10 +24,7 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col relative bg-grid-slate-900">
-      {/* Subtle top gradient */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-[#020617] via-transparent to-transparent z-0 pointer-events-none" />
-
+    <div className="flex flex-col relative">
       {/* Hero Section: Asymmetrical Dashboard View */}
       <section className="container mx-auto px-4 md:px-8 py-16 lg:py-24 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">

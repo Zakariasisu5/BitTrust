@@ -21,11 +21,12 @@ const data = [
 
 export const ScoreChart = () => {
   return (
-    <Card className="matte-card">
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-slate-400">Reputation History (90D)</CardTitle>
+    <Card className="matte-card relative overflow-hidden">
+      <div className="absolute inset-0 bg-grid-slate-900 opacity-50 pointer-events-none" />
+      <CardHeader className="relative z-10">
+        <CardTitle className="text-sm font-medium text-slate-400 font-mono">[{'>'} REPUTATION_HISTORY_90D]</CardTitle>
       </CardHeader>
-      <CardContent className="h-[300px] w-full pt-4">
+      <CardContent className="h-[300px] w-full pt-4 relative z-10">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
@@ -35,6 +36,7 @@ export const ScoreChart = () => {
               fontSize={12} 
               tickLine={false} 
               axisLine={false} 
+              tick={{ fontFamily: 'monospace' }}
             />
             <YAxis 
               stroke="#64748b" 
@@ -42,12 +44,14 @@ export const ScoreChart = () => {
               tickLine={false} 
               axisLine={false} 
               domain={[600, 800]}
+              tick={{ fontFamily: 'monospace' }}
             />
             <Tooltip 
               contentStyle={{ 
                 backgroundColor: '#0f172a', 
                 border: '1px solid #1e293b',
-                borderRadius: '8px'
+                borderRadius: '8px',
+                fontFamily: 'monospace'
               }}
               itemStyle={{ color: '#f59e0b' }}
             />

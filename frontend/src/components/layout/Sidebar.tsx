@@ -118,6 +118,9 @@ export const Sidebar = () => {
 
         {/* User Connection Block */}
         <div className="pt-4 border-t border-slate-800">
+          <div className="mb-3 px-2 font-mono text-[10px] text-slate-500">
+            v1.0.0-beta [sys.node]
+          </div>
           {isConnected ? (
             <div className="flex flex-col gap-3 px-2">
               <div className="flex items-center justify-between px-2">

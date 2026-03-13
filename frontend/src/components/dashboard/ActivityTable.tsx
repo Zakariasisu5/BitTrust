@@ -46,29 +46,29 @@ export const ActivityTable = () => {
   return (
     <Card className="matte-card">
       <CardHeader>
-        <CardTitle className="text-sm font-medium text-slate-400">Recent Reputation Events</CardTitle>
+        <CardTitle className="text-sm font-medium text-slate-400 font-mono">[{'>'} EVENT_LOGS]</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow className="border-slate-800 hover:bg-transparent">
-              <TableHead className="text-xs text-slate-500">Date</TableHead>
-              <TableHead className="text-xs text-slate-500">Type</TableHead>
-              <TableHead className="text-xs text-slate-500">Description</TableHead>
-              <TableHead className="text-xs text-slate-500 text-right">Impact</TableHead>
+              <TableHead className="text-xs text-slate-500 font-mono">TIMESTAMP</TableHead>
+              <TableHead className="text-xs text-slate-500 font-mono">TYPE</TableHead>
+              <TableHead className="text-xs text-slate-500 font-mono">EVENT_DESC</TableHead>
+              <TableHead className="text-xs text-slate-500 text-right font-mono">IMPACT_Δ</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {events.map((event, i) => (
-              <TableRow key={i} className="border-slate-800 hover:bg-slate-900/40">
+              <TableRow key={i} className="border-slate-800 hover:bg-slate-900/40 border-l-2 border-l-transparent hover:border-l-amber-500 transition-colors">
                 <TableCell className="text-xs text-slate-400 font-mono">{event.date}</TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="text-[10px] py-0 border-slate-700 text-slate-300">
+                  <Badge variant="outline" className="text-[10px] py-0 border-slate-700 text-slate-300 font-mono">
                     {event.type}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-sm text-slate-300">{event.description}</TableCell>
-                <TableCell className="text-right text-xs font-bold text-emerald-500">{event.impact}</TableCell>
+                <TableCell className="text-right text-xs font-mono font-bold text-emerald-500">{event.impact}</TableCell>
               </TableRow>
             ))}
           </TableBody>

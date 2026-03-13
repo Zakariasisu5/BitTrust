@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { WalletProvider } from "@/context/WalletContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 
-const inter = Inter({ subsets: ["latin"] });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "BitTrust | Decentralized Reputation Protocol",
@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} bg-slate-950 text-slate-100 antialiased`}>
+      <body className={`${jetbrainsMono.className} bg-slate-950 text-slate-100 antialiased`}>
         <WalletProvider>
           <AppLayout>{children}</AppLayout>
         </WalletProvider>

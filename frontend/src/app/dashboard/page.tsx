@@ -90,15 +90,22 @@ export default function DashboardPage() {
               score={732} 
               minScore={650} 
             />
-            <div className="matte-card flex flex-col items-center justify-center p-6 text-center">
-              <p className="text-sm font-medium text-slate-400">Active Verification</p>
-              <div className="mt-2 text-2xl font-bold text-amber-500 tracking-tighter">x402 Protocol</div>
-              <p className="mt-1 text-xs text-slate-500 leading-relaxed px-4">
-                Agents are currently paying 0.01 USDCx per query to verify your reputation.
-              </p>
-              <Button variant="link" className="mt-2 text-xs text-amber-500/80">
-                View Earnings History
-              </Button>
+            <div className="matte-card relative overflow-hidden shadow-2xl flex flex-col">
+              <div className="flex items-center gap-2 border-b border-slate-800 bg-slate-900 px-4 py-2 relative z-10">
+                <div className="h-3 w-3 rounded-full bg-red-500/80" />
+                <div className="h-3 w-3 rounded-full bg-amber-500/80" />
+                <div className="h-3 w-3 rounded-full bg-emerald-500/80" />
+                <span className="ml-2 font-mono text-[10px] text-slate-500">x402_listener</span>
+              </div>
+              <div className="p-4 font-mono text-[10px] sm:text-xs leading-relaxed text-slate-400 overflow-hidden relative z-10 flex-1 flex flex-col justify-end space-y-1.5">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-transparent pointer-events-none" />
+                <p><span className="text-slate-500">{"["}SYS{"]"}</span> Port 4020 listening...</p>
+                <p><span className="text-emerald-500">{"["}RECV{"]"}</span> GET /score/ST12... from AI_AGENT_04</p>
+                <p><span className="text-amber-500">{"["}AUTH{"]"}</span> Enforcing 402 Payment...</p>
+                <p><span className="text-emerald-500">{"["}PAID{"]"}</span> +0.01 USDCx received.</p>
+                <p><span className="text-slate-500">{"["}SYS{"]"}</span> Session closed.</p>
+                <p className="animate-pulse text-amber-500">_</p>
+              </div>
             </div>
           </div>
 

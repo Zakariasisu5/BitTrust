@@ -15,15 +15,16 @@ export const LoanStatus = ({ score, minScore }: LoanStatusProps) => {
 
   return (
     <Card className="matte-card">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-slate-400">Loan Eligibility</CardTitle>
+      <div className="absolute inset-0 bg-grid-slate-900 opacity-20 pointer-events-none" />
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+        <CardTitle className="text-sm font-medium text-slate-400 font-mono">[{'>'} LOAN_ELIGIBILITY]</CardTitle>
         {isEligible ? (
-          <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/50">Eligible</Badge>
+          <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/50 font-mono">OK</Badge>
         ) : (
-          <Badge className="bg-red-500/10 text-red-500 border-red-500/50">Not Eligible</Badge>
+          <Badge className="bg-red-500/10 text-red-500 border-red-500/50 font-mono">DENIED</Badge>
         )}
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative z-10">
         <div className="mt-2 flex items-center gap-3">
           {isEligible ? (
             <CheckCircle2 className="h-8 w-8 text-emerald-500" />
@@ -36,18 +37,18 @@ export const LoanStatus = ({ score, minScore }: LoanStatusProps) => {
                 ? "Qualified for low-collateral loans" 
                 : "Higher collateral required"}
             </p>
-            <p className="text-xs text-slate-500">Min score required: {minScore}</p>
+            <p className="text-xs text-slate-500 font-mono mt-1">MIN_REQ_SCORE: {minScore}</p>
           </div>
         </div>
         
         <div className="mt-6 space-y-2">
-          <div className="flex justify-between text-[10px] uppercase tracking-wider text-slate-500">
-            <span>Progress</span>
+          <div className="flex justify-between text-[10px] uppercase tracking-wider text-slate-500 font-mono">
+            <span>PROGRESS</span>
             <span>{score} / {minScore}</span>
           </div>
           <div className="h-1.5 w-full rounded-full bg-slate-800">
             <div 
-              className={`h-full rounded-full transition-all duration-1000 ${isEligible ? 'bg-emerald-500' : 'bg-amber-500'}`}
+              className={`h-full rounded-full transition-all duration-1000 ${isEligible ? 'bg-emerald-500 shadow-[0_0_10px_#10B981]' : 'bg-amber-500'}`}
               style={{ width: `${progress}%` }}
             />
           </div>

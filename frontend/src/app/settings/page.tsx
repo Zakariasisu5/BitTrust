@@ -47,98 +47,105 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8 pb-10 max-w-3xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <div className="font-mono text-xs text-amber-500 mb-2">{'// SYSTEM_CONFIG'}</div>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-100">Settings</h1>
         <p className="text-slate-500">Manage your profile visibility and protocol preferences.</p>
       </div>
 
-      <Card className="matte-card">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Globe className="h-5 w-5 text-amber-500" /> Public Profile
+      <Card className="matte-card relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-slate-900 opacity-20 pointer-events-none" />
+        <CardHeader className="relative z-10 border-b border-slate-800/50 bg-slate-900/30">
+          <CardTitle className="text-sm font-mono flex items-center gap-2 text-slate-400">
+            <Globe className="h-4 w-4 text-amber-500" /> [{'>'} CONFIG::PUBLIC_PROFILE]
           </CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-slate-500 text-xs font-mono">
             Control who can view your reputation score.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6 relative z-10">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5 pr-4">
-              <Label className="text-base text-slate-200">Make Profile Public</Label>
-              <p className="text-xs text-slate-500">Allow anyone to view your trust score via the web dashboard.</p>
+              <Label className="text-sm font-mono text-slate-200">MAKE_PROFILE_PUBLIC</Label>
+              <p className="text-xs font-mono text-slate-500 mt-1">Allow anyone to view your trust score via the web dashboard.</p>
             </div>
             <Switch 
               checked={isPublic} 
               onCheckedChange={setIsPublic} 
-              className="data-[state=checked]:bg-amber-500"
+              className="data-[state=checked]:bg-emerald-500"
             />
           </div>
         </CardContent>
       </Card>
 
-      <Card className="matte-card">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Shield className="h-5 w-5 text-amber-500" /> x402 Protocol Settings
+      <Card className="matte-card relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-slate-900 opacity-20 pointer-events-none" />
+        <CardHeader className="relative z-10 border-b border-slate-800/50 bg-slate-900/30">
+          <CardTitle className="text-sm font-mono flex items-center gap-2 text-slate-400">
+            <Shield className="h-4 w-4 text-amber-500" /> [{'>'} CONFIG::X402_PROTOCOL]
           </CardTitle>
-          <CardDescription className="text-slate-400">
+          <CardDescription className="text-slate-500 text-xs font-mono">
             Manage your autonomous machine-to-machine interactions.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6 relative z-10">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5 pr-4">
-              <Label className="text-base text-slate-200">Auto-Approve Micro-payments</Label>
-              <p className="text-xs text-slate-500">Automatically accept x402 payments to reveal your score to requesting agents.</p>
+              <Label className="text-sm font-mono text-slate-200">AUTO_APPROVE_PAYMENTS</Label>
+              <p className="text-xs font-mono text-slate-500 mt-1">Automatically accept x402 payments to reveal your score to requesting agents.</p>
             </div>
             <Switch 
               checked={x402Auto} 
               onCheckedChange={setX402Auto} 
-              className="data-[state=checked]:bg-amber-500"
+              className="data-[state=checked]:bg-emerald-500"
             />
           </div>
           
-          <div className={`space-y-2 transition-opacity duration-200 ${x402Auto ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
-            <Label htmlFor="amount" className="text-slate-300">Minimum Query Fee (USDCx)</Label>
-            <Input 
-              id="amount" 
-              type="number"
-              step="0.01"
-              className="bg-slate-950 border-slate-800 text-slate-100 focus-visible:ring-amber-500 w-full sm:w-1/2"
-              value={maxAmount}
-              onChange={(e) => setMaxAmount(e.target.value)}
-            />
-            <p className="text-[10px] text-slate-500">The minimum amount an agent must pay to access your reputation data.</p>
+          <div className={`space-y-2 transition-opacity duration-200 border-l-2 border-slate-800 pl-4 py-2 ${x402Auto ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+            <Label htmlFor="amount" className="text-xs font-mono text-slate-400">MIN_QUERY_FEE (USDCx)</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-2.5 text-amber-500 font-mono text-sm">{'>'}</span>
+              <Input 
+                id="amount" 
+                type="number"
+                step="0.01"
+                className="bg-[#050816] border-slate-800 text-slate-100 focus-visible:ring-amber-500 w-full sm:w-1/2 font-mono text-xs pl-8"
+                value={maxAmount}
+                onChange={(e) => setMaxAmount(e.target.value)}
+              />
+            </div>
+            <p className="text-[10px] font-mono text-slate-500 mt-2">The minimum amount an agent must pay to access your reputation data.</p>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="matte-card">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Bell className="h-5 w-5 text-amber-500" /> Notifications
+      <Card className="matte-card relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-slate-900 opacity-20 pointer-events-none" />
+        <CardHeader className="relative z-10 border-b border-slate-800/50 bg-slate-900/30">
+          <CardTitle className="text-sm font-mono flex items-center gap-2 text-slate-400">
+            <Bell className="h-4 w-4 text-amber-500" /> [{'>'} CONFIG::NOTIFICATIONS]
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6 relative z-10">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5 pr-4">
-              <Label className="text-base text-slate-200">Score Updates</Label>
-              <p className="text-xs text-slate-500">Receive alerts when your reputation score changes by more than 10 points.</p>
+              <Label className="text-sm font-mono text-slate-200">SCORE_UPDATE_ALERTS</Label>
+              <p className="text-xs font-mono text-slate-500 mt-1">Receive alerts when your reputation score changes by more than 10 points.</p>
             </div>
             <Switch 
               checked={notifications} 
               onCheckedChange={setNotifications} 
-              className="data-[state=checked]:bg-amber-500"
+              className="data-[state=checked]:bg-emerald-500"
             />
           </div>
         </CardContent>
       </Card>
 
       <div className="flex justify-end pt-4">
-        <Button onClick={handleSave} disabled={isSaving} className="primary-btn px-8">
+        <Button onClick={handleSave} disabled={isSaving} className="primary-btn px-8 font-mono text-xs">
           {isSaving ? (
-            <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
+            <><Loader2 className="mr-2 h-3 w-3 animate-spin" /> SAVING_CONFIG_</>
           ) : (
-            <><Save className="mr-2 h-4 w-4" /> Save Changes</>
+            <><Save className="mr-2 h-3 w-3" /> SAVE_CONFIG</>
           )}
         </Button>
       </div>
