@@ -303,6 +303,55 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Technical Methodology Section */}
+      <section className="container mx-auto px-4 py-24 relative z-10 max-w-6xl">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="flex flex-col items-start text-left">
+            <div className="font-mono text-xs text-amber-500 mb-2">{'// SCORING_ALGORITHM_V1'}</div>
+            <h2 className="text-3xl font-bold text-slate-100 mb-6">Trust Matrix Parameters</h2>
+            <p className="text-slate-400 mb-8 leading-relaxed">
+              Our reputation engine processes hundreds of on-chain variables to generate a single, verifiable score. 
+              The algorithm is weighted to prioritize long-term stability and successful capital utilization.
+            </p>
+            
+            <div className="space-y-6 w-full">
+              {[
+                { label: "WALLET_AGE_STABILITY", weight: "20%", desc: "Time elapsed since first on-chain transaction." },
+                { label: "TX_SUCCESS_VELOCITY", weight: "25%", desc: "Ratio of successful vs failed smart contract calls." },
+                { label: "DEFI_REPAYMENT_HISTORY", weight: "35%", desc: "Timely settlement of loans across Stacks protocols." },
+                { label: "GOV_PARTICIPATION", weight: "20%", desc: "Active involvement in SIPs and DAO voting." }
+              ].map((matrix, i) => (
+                <div key={i} className="border-b border-slate-800 pb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-mono text-xs font-bold text-slate-200">{matrix.label}</span>
+                    <span className="font-mono text-xs text-amber-500">{matrix.weight}</span>
+                  </div>
+                  <p className="text-xs text-slate-500">{matrix.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="relative">
+            <div className="absolute -inset-4 bg-amber-500/5 rounded-full blur-3xl" />
+            <Image 
+              src="/icon.png" 
+              alt="BitTrust Shield" 
+              width={400} 
+              height={400} 
+              className="relative z-10 mx-auto w-full max-w-[350px] opacity-80"
+            />
+            {/* HUD Overlay for the Icon */}
+            <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+              <div className="w-full h-full border border-slate-800/50 rounded-sm relative">
+                <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-amber-500/50" />
+                <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-amber-500/50" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* High-Fidelity x402 Section */}
       <section className="container mx-auto px-4 py-24 relative z-10 max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-16 items-center">

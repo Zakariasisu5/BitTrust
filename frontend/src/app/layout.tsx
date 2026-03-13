@@ -9,6 +9,9 @@ const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "BitTrust | Decentralized Reputation Protocol",
   description: "On-chain reputation and credit scoring for AI agents and Bitcoin wallets.",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
