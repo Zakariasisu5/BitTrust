@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 35 92% 54%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 247 100% 64%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 35 92% 54%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom styles based on design rules */
+.matte-card {
+  @apply rounded-xl bg-slate-900/60 border border-slate-800 shadow-sm transition-all duration-200 ease-out;
+}
+
+.primary-btn {
+  @apply bg-[#F7931A] hover:bg-[#C56F11] text-slate-950 font-medium rounded-lg px-4 py-2 transition-all duration-200 ease-out;
+}
+
+.secondary-btn {
+  @apply bg-slate-800 hover:bg-slate-700 text-slate-100 font-medium rounded-lg px-4 py-2 transition-all duration-200 ease-out;
+}
+
+.badge-base {
+  @apply rounded-full px-2.5 py-0.5 text-xs uppercase font-semibold;
+}
