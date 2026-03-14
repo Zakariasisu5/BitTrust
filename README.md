@@ -43,18 +43,18 @@ At a high level, BitTrust is composed of:
 ```mermaid
 flowchart LR
   subgraph Client
-    U[User Wallet / AI Agent]
-    FE[BitTrust Frontend (Next.js)]
+    U[User / Agent]
+    FE[Frontend]
   end
 
-  subgraph OffChain[Off‑chain Services]
+  subgraph OffChain
     IDX[Indexing Layer]
     RE[Reputation Engine]
-    API[Public / Internal API]
+    API[Reputation API]
   end
 
-  subgraph OnChain[Stacks / Bitcoin]
-    SC[BitTrust Clarity Contracts]
+  subgraph OnChain
+    SC[Clarity Contracts]
     BTC[Bitcoin Settlement]
   end
 
@@ -85,7 +85,7 @@ The following sequence diagram summarizes a typical score lookup:
 ```mermaid
 sequenceDiagram
   actor W as Wallet / Agent
-  participant FE as Frontend (Next.js)
+  participant FE as Frontend
   participant API as Reputation API
   participant RE as Reputation Engine
   participant SC as Clarity Contracts
@@ -93,7 +93,7 @@ sequenceDiagram
   W->>FE: Connect wallet / request score
   FE->>API: GET /score/{address}
   API->>RE: Fetch latest score for address
-  RE->>SC: (Optional) Read on‑chain canonical score
+  RE->>SC: (Optional) Read on-chain canonical score
   SC-->>RE: Score + metadata
   RE-->>API: Normalized score + factors + tier
   API-->>FE: JSON response
