@@ -24,8 +24,7 @@ Broadcasting transactions to https://api.testnet.hiro.so
 🟦  Publish ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.usdcx-mock                   Transaction encoded and queued                                               
 🟪  Contract publish ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.usdcx-mock          Transaction indexed                                                          
 
-                                                                                                                                                                
-                                                                                                                                                                 Post-Deployment Roadmap
+                                                                                                                                                              
 
 ### Phase 1: Verification & Documentation
 * **Verify on Explorer**: Ensure all three contracts (`bittrust-payment`, `bittrust-reputation`, and `usdcx-mock`) show a "Confirmed" status on the Hiro Explorer.
