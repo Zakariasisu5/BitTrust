@@ -38,6 +38,35 @@ At a high level, BitTrust is composed of:
 - **Smart Contracts (planned `contracts/`)**: Clarity contracts to store scores, verify payments, and expose a canonical on-chain view.
 - **Blockchain Layer**: Stacks as the execution and data anchoring layer, settling to Bitcoin.
 
+**High‑level component diagram**
+
+```mermaid
+flowchart LR
+  subgraph Client
+    U[User Wallet / AI Agent]
+    FE[BitTrust Frontend (Next.js)]
+  end
+
+  subgraph OffChain[Off‑chain Services]
+    IDX[Indexing Layer]
+    RE[Reputation Engine]
+    API[Public / Internal API]
+  end
+
+  subgraph OnChain[Stacks / Bitcoin]
+    SC[BitTrust Clarity Contracts]
+    BTC[Bitcoin Settlement]
+  end
+
+  U --> FE
+  FE --> API
+  IDX --> RE
+  RE --> SC
+  SC --> BTC
+  API --> RE
+  FE --> SC
+```
+
 **Data flow (target design)**
 
 1. Indexer ingests wallet activity (tx history, DeFi interactions, governance actions).
@@ -46,6 +75,30 @@ At a high level, BitTrust is composed of:
 4. Frontend and external agents query scores via:
    - Off-chain HTTP API (for low-latency reads and analytics).
    - On-chain read-only contract calls (for protocol-level integration).
+
+---
+
+## System Flow (End‑to‑End)
+
+The following sequence diagram summarizes a typical score lookup:
+
+```mermaid
+sequenceDiagram
+  actor W as Wallet / Agent
+  participant FE as Frontend (Next.js)
+  participant API as Reputation API
+  participant RE as Reputation Engine
+  participant SC as Clarity Contracts
+
+  W->>FE: Connect wallet / request score
+  FE->>API: GET /score/{address}
+  API->>RE: Fetch latest score for address
+  RE->>SC: (Optional) Read on‑chain canonical score
+  SC-->>RE: Score + metadata
+  RE-->>API: Normalized score + factors + tier
+  API-->>FE: JSON response
+  FE-->>W: Render score, factors, and risk tier
+```
 
 ---
 
