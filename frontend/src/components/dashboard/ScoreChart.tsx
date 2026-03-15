@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const data = [
+const defaultData = [
   { date: 'Jan 01', score: 650 },
   { date: 'Jan 15', score: 680 },
   { date: 'Feb 01', score: 670 },
@@ -19,7 +19,17 @@ const data = [
   { date: 'Mar 01', score: 732 },
 ];
 
-export const ScoreChart = () => {
+interface ScoreChartProps {
+  history?: { date: string; score: number }[];
+  currentScore?: number;
+}
+
+export const ScoreChart = ({ history, currentScore }: ScoreChartProps) => {
+  const data = history && history.length > 0
+    ? history
+    : currentScore !== undefined
+      ? [...defaultData.slice(0, -1), { date: 'Now', score: currentScore }]
+      : defaultData;
   return (
     <Card className="matte-card relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-slate-900 opacity-50 pointer-events-none" />

@@ -2,16 +2,45 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Info } from "lucide-react";
+import { getTierFromScore, formatLastUpdated } from "@/lib/score-utils";
 
 interface ReputationCardProps {
   score: number;
-  tier: string;
-  label: string;
-  lastUpdated: string;
+  tier?: string;
+  label?: string;
+  lastUpdated: number | string;
+  isLoading?: boolean;
 }
 
-export const ReputationCard = ({ score, tier, label, lastUpdated }: ReputationCardProps) => {
+export const ReputationCard = ({
+  score,
+  tier: tierProp,
+  label: labelProp,
+  lastUpdated,
+  isLoading = false,
+}: ReputationCardProps) => {
+  const { tier: derivedTier, label: derivedLabel } = getTierFromScore(score);
+  const tier = tierProp ?? derivedTier;
+  const label = labelProp ?? derivedLabel;
+  const lastUpdatedStr =
+    typeof lastUpdated === "number" ? formatLastUpdated(lastUpdated) : lastUpdated;
+
+  if (isLoading) {
+    return (
+      <Card className="matte-card overflow-hidden">
+        <CardHeader className="pb-2">
+          <Skeleton className="h-4 w-24 bg-slate-800" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-12 w-32 bg-slate-800" />
+          <Skeleton className="mt-2 h-4 w-full bg-slate-800" />
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="matte-card overflow-hidden glow-amber">
       <div className="scanline" />
@@ -44,7 +73,7 @@ export const ReputationCard = ({ score, tier, label, lastUpdated }: ReputationCa
         </div>
         <p className="mt-4 text-[10px] text-slate-500 flex items-center gap-1 font-mono">
           <Info className="h-3 w-3" />
-          [UPDATED: {lastUpdated}] - STACKS_INDEXER
+          [UPDATED: {lastUpdatedStr}] - STACKS_INDEXER
         </p>
       </CardContent>
     </Card>
