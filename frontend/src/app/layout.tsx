@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import dynamic from "next/dynamic";
-
-const Providers = dynamic(
-  () => import("./Providers").then((m) => ({ default: m.Providers })),
-  { ssr: false }
-);
+import { Providers } from "./Providers";
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] });
 
