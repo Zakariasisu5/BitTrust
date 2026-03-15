@@ -22,7 +22,6 @@
     "test": "tests"
   },
   "devDependencies": {
-    "@hirosystems/clarinet-sdk": "^3.8.1",
     "@stacks/clarinet-sdk": "^3.15.0",
     "@stacks/transactions": "^7.3.1",
     "typescript": "^5.9.3",
