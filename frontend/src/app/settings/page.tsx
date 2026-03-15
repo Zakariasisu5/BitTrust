@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 const SettingsContent = dynamic(
-  () => import("./SettingsContent").then((m) => ({ default: m.SettingsContent })),
+  () => import("./SettingsContent"),
   { ssr: false }
 );
 

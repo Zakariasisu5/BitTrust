@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 const DashboardContent = dynamic(
-  () => import("./DashboardContent").then((m) => ({ default: m.DashboardContent })),
+  () => import("./DashboardContent"),
   {
     ssr: false,
     loading: () => (

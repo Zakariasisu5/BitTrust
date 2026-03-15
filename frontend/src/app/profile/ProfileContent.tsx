@@ -188,3 +188,5 @@ export function ProfileContent() {
     </div>
   );
 }
+
+export default ProfileContent;
