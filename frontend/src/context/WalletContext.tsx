@@ -25,33 +25,60 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [network, setNetwork] = useState("testnet");
 
   useEffect(() => {
-    if (userSession.isUserSignedIn()) {
-      const userData = userSession.loadUserData();
-      setAddress(userData.profile.stxAddress.testnet);
+    // Hydrate from existing session on first client render
+    if (typeof window === "undefined") return;
+    if (!userSession.isUserSignedIn()) return;
+
+    const userData = userSession.loadUserData();
+    const profileAddress = userData?.profile?.stxAddress;
+
+    if (profileAddress?.mainnet) {
+      setAddress(profileAddress.mainnet);
+      setNetwork("mainnet");
+    } else if (profileAddress?.testnet) {
+      setAddress(profileAddress.testnet);
+      setNetwork("testnet");
     }
   }, []);
 
   const connect = () => {
+    if (typeof window === "undefined") return;
+
     setIsConnecting(true);
     setError(null);
 
-    showConnect({
-      appDetails: {
-        name: "BitTrust",
-        icon: window.location.origin + "/icon.png",
-      },
-      redirectTo: "/",
-      onFinish: () => {
-        const userData = userSession.loadUserData();
-        setAddress(userData.profile.stxAddress.testnet);
-        setIsConnecting(false);
-        window.location.reload();
-      },
-      onCancel: () => {
-        setIsConnecting(false);
-      },
-      userSession,
-    });
+    try {
+      showConnect({
+        appDetails: {
+          name: "BitTrust",
+          icon: window.location.origin + "/icon.png",
+        },
+        redirectTo: "/",
+        onFinish: () => {
+          const userData = userSession.loadUserData();
+          const profileAddress = userData?.profile?.stxAddress;
+
+          if (profileAddress?.mainnet) {
+            setAddress(profileAddress.mainnet);
+            setNetwork("mainnet");
+          } else if (profileAddress?.testnet) {
+            setAddress(profileAddress.testnet);
+            setNetwork("testnet");
+          }
+
+          setIsConnecting(false);
+        },
+        onCancel: () => {
+          setIsConnecting(false);
+        },
+        userSession,
+      });
+    } catch (e) {
+      setIsConnecting(false);
+      setError(
+        "Failed to open Stacks wallet. Ensure a single wallet extension (e.g. Xverse) is enabled."
+      );
+    }
   };
 
   const disconnect = () => {
