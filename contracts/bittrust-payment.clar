@@ -12,9 +12,8 @@
 (define-constant QUERY-PRICE u1000000) ;; 1.00 Token (assuming 6 decimals)
 
 ;; [SECURITY]: Hardcode the exact token contract - accept to prevent Trait Spoofing.
-;; NOTE: Update this address to the actual USDCx contract on testnet, 
-;; or with mock token address for local testing.
-(define-constant ACCEPTED-TOKEN 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.usdcx-mock)
+;; Must match the deployed usdcx-mock contract (same deployer as this contract).
+(define-constant ACCEPTED-TOKEN 'ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.usdcx-mock)
 
 ;; Maps
 (define-map agent-credits principal uint)

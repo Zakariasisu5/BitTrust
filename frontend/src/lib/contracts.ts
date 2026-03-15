@@ -13,8 +13,8 @@ export const CONTRACTS = {
   },
   usdcxMock: {
     address: CONTRACT_DEPLOYER,
-    name: "mock-usdcx",
-    fullId: `${CONTRACT_DEPLOYER}.mock-usdcx`,
+    name: "usdcx-mock",
+    fullId: `${CONTRACT_DEPLOYER}.usdcx-mock`,
   },
 } as const;
 
