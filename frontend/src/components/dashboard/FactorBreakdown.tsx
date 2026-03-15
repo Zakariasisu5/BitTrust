@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Info } from "lucide-react";
 
-const factors = [
+const defaultFactors = [
   { name: "Wallet Age", value: "3.2 Years", impact: "+45", color: "text-emerald-500" },
   { name: "Tx Frequency", value: "142/Mo", impact: "+32", color: "text-emerald-500" },
   { name: "Loan Repayments", value: "100%", impact: "+120", color: "text-emerald-500" },
@@ -11,7 +11,18 @@ const factors = [
   { name: "Risk Flags", value: "None", impact: "0", color: "text-slate-400" },
 ];
 
-export const FactorBreakdown = () => {
+interface FactorBreakdownProps {
+  txCount?: number;
+}
+
+export const FactorBreakdown = ({ txCount }: FactorBreakdownProps) => {
+  const factors =
+    txCount !== undefined && txCount > 0
+      ? [
+          ...defaultFactors,
+          { name: "On-Chain Tx Count", value: `${txCount}`, impact: "", color: "text-slate-400" as const },
+        ]
+      : defaultFactors;
   return (
     <Card className="matte-card">
       <div className="absolute inset-0 bg-grid-slate-900 opacity-20 pointer-events-none" />

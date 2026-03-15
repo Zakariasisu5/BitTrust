@@ -12,6 +12,7 @@ costs-reports.json
 node_modules
 
 .cache/
+.cursor/hooks/state
 deployments/
 settings/Testnet.toml
 settings/Mainnet.toml
