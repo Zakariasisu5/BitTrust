@@ -17,7 +17,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.2.15",
     "@stacks/connect": "^7.4.0",
-    "@stacks/connect-react": "^22.2.0",
+    "@stacks/connect-react": "^22.6.2",
     "@stacks/transactions": "^7.3.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
