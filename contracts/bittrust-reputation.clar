@@ -50,7 +50,8 @@
 
         (map-set reputation-scores user {
             score: new-score,
-            last-updated: block-height,
+            ;; UPDATED LINE: Replaced block-height with stacks-block-height
+            last-updated: stacks-block-height,
             tx-count: new-tx-count
         })
         
