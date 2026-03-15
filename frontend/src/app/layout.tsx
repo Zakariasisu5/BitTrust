@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { WalletProvider } from "@/context/WalletContext";
-import { AppLayout } from "@/components/layout/AppLayout";
+import dynamic from "next/dynamic";
+
+const Providers = dynamic(
+  () => import("./Providers").then((m) => ({ default: m.Providers })),
+  { ssr: false }
+);
 
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] });
 
@@ -22,9 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${jetbrainsMono.className} bg-slate-950 text-slate-100 antialiased`}>
-        <WalletProvider>
-          <AppLayout>{children}</AppLayout>
-        </WalletProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
