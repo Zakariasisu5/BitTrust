@@ -46,17 +46,21 @@ describe("BitTrust Reputation Registry", () => {
     
     // We expect a tuple back containing the score data
     expect(readScore.result.type).toBe("ok");
-    const tuple = readScore.result.value;
-    // Debug output
-    console.log("Returned tuple from get-score:", tuple);
-    if (tuple.type === "tuple") {
-      const tupleValue = (tuple as TupleCV).value;
-      expect(tupleValue["score"]).toEqual(Cl.uint(85));
-      expect(tupleValue["tx-count"]).toEqual(Cl.uint(120));
-      expect(tupleValue["last-updated"].type).toBe("uint");
-      expect(Number(tupleValue["last-updated"].value)).toBeGreaterThanOrEqual(0);
+    if (readScore.result.type === "ok") {
+      const tuple = readScore.result.value as TupleCV;
+      // Debug output
+      console.log("Returned tuple from get-score:", tuple);
+      if (tuple.type === "tuple") {
+        const tupleValue = tuple.value;
+        expect(tupleValue["score"]).toEqual(Cl.uint(85));
+        expect(tupleValue["tx-count"]).toEqual(Cl.uint(120));
+        expect(tupleValue["last-updated"].type).toBe("uint");
+        expect(Number((tupleValue["last-updated"] as { value: bigint | number | string }).value)).toBeGreaterThanOrEqual(0);
+      } else {
+        throw new Error("Expected a tuple ClarityValue");
+      }
     } else {
-      throw new Error("Expected a tuple ClarityValue");
+      throw new Error("Expected an OkCV result");
     }
   });
 });
