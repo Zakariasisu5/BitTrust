@@ -19,7 +19,7 @@ BitTrust bridges the gap between off-chain AI decision-making and on-chain finan
 # Contracts deployed 
 
 Broadcasting transactions to https://api.testnet.hiro.so                                                                                                        
-🟩  Publish ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.bittrust-payment             Transaction confirmed                                                        
+🟩  Publish ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.bittrust-payment-v2          Transaction confirmed                                                       
 🟩  Publish ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.bittrust-reputation          Transaction confirmed
 🟦  Publish ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.usdcx-mock                   Transaction encoded and queued                                               
 🟪  Contract publish ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.usdcx-mock          Transaction indexed                                                          
