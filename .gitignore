@@ -16,3 +16,5 @@ node_modules
 deployments/
 settings/Testnet.toml
 settings/Mainnet.toml
+.env
+backend/.env
