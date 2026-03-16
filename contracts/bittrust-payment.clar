@@ -13,7 +13,7 @@
 
 ;; [SECURITY]: Hardcode the exact token contract - accept to prevent Trait Spoofing.
 ;; Must match the deployed usdcx-mock contract (same deployer as this contract).
-(define-constant ACCEPTED-TOKEN 'ST2JPZFFA0BFAMHDJMKACNY5YD7P7R6HEEN7NPVJG.usdcx-mock)
+(define-constant ACCEPTED-TOKEN 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.usdcx-mock)
 
 ;; Maps
 (define-map agent-credits principal uint)

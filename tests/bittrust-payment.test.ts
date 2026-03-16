@@ -3,6 +3,7 @@ import { Cl } from "@stacks/transactions";
 import { tx } from "@stacks/clarinet-sdk"; 
 
 const deployer = "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM";
+const tokenDeployer = deployer;
 const agentWallet = "ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5";
 
 describe("BitTrust Payment Gateway", () => {
@@ -27,7 +28,7 @@ describe("BitTrust Payment Gateway", () => {
         "buy-credits",
         [
           Cl.uint(1000000),
-          Cl.contractPrincipal(deployer, "usdcx-mock"), // The accepted token
+          Cl.contractPrincipal(tokenDeployer, "usdcx-mock"), // The accepted token
         ],
         agentWallet
       ),

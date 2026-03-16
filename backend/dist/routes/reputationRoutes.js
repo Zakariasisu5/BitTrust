@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const reputationController_1 = require("../controllers/reputationController");
+const router = (0, express_1.Router)();
+router.get("/reputation/:wallet", reputationController_1.getReputation);
+router.post("/reputation/update", reputationController_1.postUpdateReputation);
+router.get("/reputation/history/:wallet", reputationController_1.getReputationHistory);
+router.get("/leaderboard", reputationController_1.getLeaderboardHandler);
+exports.default = router;
