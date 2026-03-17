@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: [
-    "@stacks/transactions",
-    "@stacks/connect",
-    "@stacks/connect-react",
-  ],
+  turbopack: {
+    root: __dirname,
+  },
 };
 
 module.exports = nextConfig;

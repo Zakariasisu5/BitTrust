@@ -30,7 +30,7 @@ export function ProfileContent() {
   const data = reputationQuery.data;
   const displayScore = data ? data.reputationScore * 10 : 0;
   const scoreLoading = reputationQuery.isLoading;
-  const txCount = data?.metrics?.transactionCount;
+  const txCount = data?.metadata?.totalTxsAnalyzed;
 
   const handleCopy = () => {
     if (address) {

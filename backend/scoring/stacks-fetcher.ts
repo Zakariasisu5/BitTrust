@@ -71,7 +71,6 @@ async function fetchTransactions(
 
     const res = await fetch(url, {
       headers: { Accept: "application/json" },
-      next: { revalidate: 60 }, // cache for 60s in Next.js
     });
 
     if (!res.ok) break;
@@ -94,7 +93,6 @@ async function fetchBalance(address: string, baseUrl: string): Promise<bigint> {
     const url = `${baseUrl}/extended/v1/address/${address}/balances`;
     const res = await fetch(url, {
       headers: { Accept: "application/json" },
-      next: { revalidate: 60 },
     });
     if (!res.ok) return BigInt(0);
     const data: HiroBalanceResponse = await res.json();

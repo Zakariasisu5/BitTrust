@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { fetchWalletStats } from "../services/blockchainService";
+import { fetchWalletActivity, type NetworkMode } from "../services/blockchainService";
 import { calculateReputationScore } from "../services/scoringEngine";
 import { assessTrust } from "../utils/trustLevel";
 import {
@@ -8,20 +8,56 @@ import {
   getWalletScore,
   updateWalletScore,
 } from "../services/leaderboardService";
+import { getRedisClient } from "../database/store";
 import type { WalletScore } from "../models/walletScore";
 import { logger } from "../utils/logger";
 
-interface UpdateWalletBody {
-  wallet: string;
+const CACHE_TTL_SECONDS = 300;
+const cacheKey = (wallet: string) => `score:${wallet}`;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function resolveNetwork(query: unknown): NetworkMode {
+  return query === "mainnet" ? "mainnet" : "testnet";
 }
 
-const buildWalletResponse = (score: WalletScore) => ({
-  wallet: score.wallet,
-  reputationScore: score.reputationScore,
-  trustLevel: score.trustLevel,
-  loanEligibility: score.loanEligibility,
-  lastUpdated: score.lastUpdated,
-});
+async function computeScore(wallet: string, network: NetworkMode): Promise<WalletScore> {
+  const activity = await fetchWalletActivity(wallet, network);
+  const result = calculateReputationScore(activity);
+  const { trustLevel, loanEligibility } = assessTrust(result.score);
+
+  return {
+    wallet,
+    reputationScore: result.score,
+    tier: result.tier,
+    tierLabel: result.tierLabel,
+    trustLevel,
+    loanEligibility,
+    explanation: result.explanation,
+    factors: result.factors,
+    breakdown: result.breakdown,
+    metadata: result.metadata,
+    lastUpdated: new Date().toISOString(),
+  };
+}
+
+function buildResponse(score: WalletScore) {
+  return {
+    wallet: score.wallet,
+    reputationScore: score.reputationScore,
+    tier: score.tier,
+    tierLabel: score.tierLabel,
+    trustLevel: score.trustLevel,
+    loanEligibility: score.loanEligibility,
+    explanation: score.explanation,
+    factors: score.factors,
+    breakdown: score.breakdown,
+    metadata: score.metadata,
+    lastUpdated: score.lastUpdated,
+  };
+}
+
+// ── Controllers ───────────────────────────────────────────────────────────────
 
 export const getReputation = async (
   req: Request<{ wallet: string }>,
@@ -29,83 +65,79 @@ export const getReputation = async (
   next: NextFunction,
 ) => {
   try {
-    const wallet = req.params.wallet;
-    const existing = getWalletScore(wallet);
-    if (existing) {
-      return res.json(buildWalletResponse(existing));
+    const wallet = req.params.wallet.trim();
+    const network = resolveNetwork(req.query.network);
+
+    // 1. Redis cache
+    const redis = await getRedisClient();
+    if (redis) {
+      try {
+        const cached = await redis.get(cacheKey(wallet));
+        if (cached) {
+          return res.json(JSON.parse(cached));
+        }
+      } catch (e) {
+        logger.warn("Redis read failed", { error: String(e) });
+      }
     }
 
-    const stats = await fetchWalletStats(wallet);
-    const breakdown = calculateReputationScore(stats);
-    const { trustLevel, loanEligibility } = assessTrust(breakdown.finalScore);
+    // 2. In-memory store
+    const existing = getWalletScore(wallet);
+    if (existing) {
+      return res.json(buildResponse(existing));
+    }
 
-    const nowIso = new Date().toISOString();
-
-    const score: WalletScore = {
-      wallet,
-      reputationScore: breakdown.finalScore,
-      trustLevel,
-      loanEligibility,
-      lastUpdated: nowIso,
-      metrics: {
-        walletAgeDays: stats.walletAgeDays,
-        transactionCount: stats.transactionCount,
-        transactionVolumeStx: stats.transactionVolumeStx,
-        protocolInteractions: stats.protocolInteractions,
-      },
-    };
-
+    // 3. Compute fresh
+    const score = await computeScore(wallet, network);
     updateWalletScore(score);
 
-    logger.info("Reputation calculated", { wallet, score: score.reputationScore });
+    const response = buildResponse(score);
 
-    return res.json(buildWalletResponse(score));
+    if (redis) {
+      try {
+        await redis.set(cacheKey(wallet), JSON.stringify(response), {
+          EX: CACHE_TTL_SECONDS,
+        });
+      } catch (e) {
+        logger.warn("Redis write failed", { error: String(e) });
+      }
+    }
+
+    logger.info("Reputation computed", { wallet, score: score.reputationScore, tier: score.tier });
+    return res.json(response);
   } catch (error) {
     return next(error);
   }
 };
 
 export const postUpdateReputation = async (
-  req: Request<unknown, unknown, UpdateWalletBody>,
+  req: Request<unknown, unknown, { wallet?: string }>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const wallet = req.body?.wallet?.trim();
     if (!wallet) {
-      return res.status(400).json({
-        error: { message: "wallet is required" },
-      });
+      return res.status(400).json({ error: { message: "wallet is required" } });
     }
+    const network = resolveNetwork(req.query.network);
 
-    const stats = await fetchWalletStats(wallet);
-    const breakdown = calculateReputationScore(stats);
-    const { trustLevel, loanEligibility } = assessTrust(breakdown.finalScore);
-
-    const nowIso = new Date().toISOString();
-
-    const score: WalletScore = {
-      wallet,
-      reputationScore: breakdown.finalScore,
-      trustLevel,
-      loanEligibility,
-      lastUpdated: nowIso,
-      metrics: {
-        walletAgeDays: stats.walletAgeDays,
-        transactionCount: stats.transactionCount,
-        transactionVolumeStx: stats.transactionVolumeStx,
-        protocolInteractions: stats.protocolInteractions,
-      },
-    };
-
+    // Always recompute on explicit update
+    const score = await computeScore(wallet, network);
     updateWalletScore(score);
 
-    logger.info("Reputation updated via POST", {
-      wallet,
-      score: score.reputationScore,
-    });
+    // Invalidate Redis cache so next GET returns fresh data
+    const redis = await getRedisClient();
+    if (redis) {
+      try {
+        await redis.del(cacheKey(wallet));
+      } catch (e) {
+        logger.warn("Redis del failed", { error: String(e) });
+      }
+    }
 
-    return res.json(buildWalletResponse(score));
+    logger.info("Reputation updated", { wallet, score: score.reputationScore, tier: score.tier });
+    return res.json(buildResponse(score));
   } catch (error) {
     return next(error);
   }
@@ -117,41 +149,34 @@ export const getReputationHistory = async (
   next: NextFunction,
 ) => {
   try {
-    const wallet = req.params.wallet;
+    const wallet = req.params.wallet.trim();
     const history = getWalletHistory(wallet);
-    return res.json(
-      history.map((entry) => ({
-        wallet: entry.wallet,
-        reputationScore: entry.reputationScore,
-        trustLevel: entry.trustLevel,
-        loanEligibility: entry.loanEligibility,
-        lastUpdated: entry.lastUpdated,
-        metrics: entry.metrics,
-      })),
-    );
+    return res.json(history.map(buildResponse));
   } catch (error) {
     return next(error);
   }
 };
 
 export const getLeaderboardHandler = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const scores = getLeaderboard();
+    const limit = Math.min(Number(req.query.limit) || 50, 100);
+    const scores = getLeaderboard(limit);
     return res.json(
-      scores.map((entry) => ({
-        wallet: entry.wallet,
-        reputationScore: entry.reputationScore,
-        trustLevel: entry.trustLevel,
-        loanEligibility: entry.loanEligibility,
-        lastUpdated: entry.lastUpdated,
+      scores.map((s) => ({
+        wallet: s.wallet,
+        reputationScore: s.reputationScore,
+        tier: s.tier,
+        tierLabel: s.tierLabel,
+        trustLevel: s.trustLevel,
+        loanEligibility: s.loanEligibility,
+        lastUpdated: s.lastUpdated,
       })),
     );
   } catch (error) {
     return next(error);
   }
 };
-

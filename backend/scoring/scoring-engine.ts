@@ -228,6 +228,7 @@ export function calculateReputationScore(
   const { tier, tierLabel } = getTier(score);
 
   const breakdown = { walletAge, txQuality, defiActivity, communityEngagement };
+  const explanation = generateExplanation(score, activity, breakdown);
 
   const factors: ScoreFactor[] = [
     {

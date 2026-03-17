@@ -149,7 +149,7 @@ export function DashboardContent() {
               />
             </div>
             <div>
-              <FactorBreakdown metrics={data?.metrics} txCount={data?.metrics?.transactionCount} />
+              <FactorBreakdown factors={data?.factors} />
             </div>
           </div>
 
