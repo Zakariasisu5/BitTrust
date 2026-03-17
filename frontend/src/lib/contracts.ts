@@ -9,7 +9,7 @@ export const CONTRACTS = {
   payment: {
     address: CONTRACT_DEPLOYER,
     name: "bittrust-payment",
-    fullId: `${CONTRACT_DEPLOYER}.bittrust-payment`,
+    fullId: `${CONTRACT_DEPLOYER}.bittrust-payment-v2`,
   },
   usdcxMock: {
     address: CONTRACT_DEPLOYER,

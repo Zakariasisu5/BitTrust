@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -13,30 +11,37 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useWallet } from "@/context/WalletContext";
-import { AlertCircle, Filter, ExternalLink } from "lucide-react";
-
-const allEvents = [
-  { id: "tx-1", date: "2025-03-12 14:30", type: "Repayment", protocol: "Alex DeFi", desc: "Loan repaid in full", impact: "+25", status: "Confirmed" },
-  { id: "tx-2", date: "2025-03-10 09:15", type: "Governance", protocol: "StackingDAO", desc: "Voted on Proposal #42", impact: "+5", status: "Confirmed" },
-  { id: "tx-3", date: "2025-03-05 18:45", type: "DeFi", protocol: "Arkadiko", desc: "Minted USDA", impact: "+10", status: "Confirmed" },
-  { id: "tx-4", date: "2025-02-28 11:20", type: "DeFi", protocol: "Zest Protocol", desc: "Supplied sBTC liquidity", impact: "+15", status: "Confirmed" },
-  { id: "tx-5", date: "2025-02-15 16:10", type: "Repayment", protocol: "Alex DeFi", desc: "Partial loan repayment", impact: "+10", status: "Confirmed" },
-  { id: "tx-6", date: "2025-02-01 08:05", type: "Risk", protocol: "Unknown", desc: "High velocity transfers detected", impact: "-5", status: "Warning" },
-  { id: "tx-7", date: "2025-01-20 13:40", type: "Governance", protocol: "CityCoins", desc: "Voted on MIA upgrade", impact: "+5", status: "Confirmed" },
-  { id: "tx-8", date: "2025-01-10 10:00", type: "System", protocol: "BitTrust", desc: "Wallet crossed 3-year age", impact: "+50", status: "Confirmed" },
-];
+import { useReputationHistoryQuery } from "@/hooks/useReputationHistoryQuery";
+import { AlertCircle, Filter } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatLastUpdatedIso } from "@/lib/score-utils";
 
 export default function ActivityPage() {
-  const { isConnected } = useWallet();
-  const [filter, setFilter] = useState("All");
+  const { isConnected, address } = useWallet();
+  const { data: history, isLoading } = useReputationHistoryQuery(address ?? null);
 
-  const filteredEvents = allEvents.filter((event) => {
-    if (filter === "All") return true;
-    if (filter === "Repayment") return event.type === "Repayment";
-    if (filter === "DeFi") return event.type === "DeFi";
-    if (filter === "Governance") return event.type === "Governance";
-    return true;
-  });
+  const events =
+    history && history.length > 0
+      ? history
+          .slice()
+          .reverse()
+          .map((entry, i) => {
+            const prev = history[history.length - 2 - i];
+            const oldScore = prev ? prev.reputationScore * 10 : 0;
+            const newScore = entry.reputationScore * 10;
+            const delta = newScore - oldScore;
+            return {
+              id: entry.lastUpdated + i,
+              date: formatLastUpdatedIso(entry.lastUpdated),
+              type: "Score",
+              protocol: "BitTrust",
+              desc: "Reputation score updated",
+              impact: delta >= 0 ? `+${delta}` : `${delta}`,
+              status: "Confirmed",
+              score: newScore,
+            };
+          })
+      : [];
 
   if (!isConnected) {
     return (
@@ -62,73 +67,72 @@ export default function ActivityPage() {
 
       <Card className="matte-card relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-slate-900 opacity-20 pointer-events-none" />
-        <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between relative z-10 border-b border-slate-800/50 bg-slate-900/30 pb-4">
+        <CardHeader className="relative z-10 border-b border-slate-800/50 bg-slate-900/30 pb-4">
           <CardTitle className="text-sm font-medium text-slate-400 flex items-center gap-2 font-mono">
-            <Filter className="h-4 w-4 text-amber-500" /> [{'>'} FILTER_LOGS]
+            <Filter className="h-4 w-4 text-amber-500" /> [{">"} REPUTATION_EVENTS]
           </CardTitle>
-          <Tabs defaultValue="All" className="w-full sm:w-auto" onValueChange={setFilter}>
-            <TabsList className="bg-[#050816] border border-slate-800 font-mono text-xs">
-              <TabsTrigger value="All" className="data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-500">ALL</TabsTrigger>
-              <TabsTrigger value="Repayment" className="data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-500">LOANS</TabsTrigger>
-              <TabsTrigger value="DeFi" className="data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-500">DEFI</TabsTrigger>
-              <TabsTrigger value="Governance" className="data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-500">GOV</TabsTrigger>
-            </TabsList>
-          </Tabs>
         </CardHeader>
         <CardContent className="pt-6 relative z-10 p-0 sm:p-6">
           <div className="rounded-md border border-slate-800 bg-[#050816] overflow-hidden">
             <div className="bg-slate-900 px-4 py-2 border-b border-slate-800 font-mono text-[10px] text-slate-500 flex items-center gap-2">
-              <span className="text-purple-400">root@bittrust</span>:<span className="text-blue-400">~/activity</span>$ tail -f event_log.txt
+              <span className="text-purple-400">root@bittrust</span>:<span className="text-blue-400">~/activity</span>$ tail -f reputation_log.txt
             </div>
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-800 hover:bg-transparent">
-                  <TableHead className="text-xs text-slate-500 font-mono">TIMESTAMP</TableHead>
-                  <TableHead className="text-xs text-slate-500 font-mono">PROTOCOL</TableHead>
-                  <TableHead className="text-xs text-slate-500 font-mono">EVENT</TableHead>
-                  <TableHead className="text-xs text-slate-500 font-mono">STATUS</TableHead>
-                  <TableHead className="text-xs text-slate-500 text-right font-mono">IMPACT_Δ</TableHead>
-                  <TableHead className="text-xs text-slate-500 text-right font-mono">TX</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredEvents.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="h-32 text-center text-slate-500 font-mono">
-                      <div className="flex flex-col items-center justify-center space-y-2">
-                        <span className="text-amber-500">{'>'} NO_EVENTS_FOUND_</span>
-                        <span className="text-[10px] animate-pulse">Waiting for new incoming blocks...</span>
-                      </div>
-                    </TableCell>
+            {isLoading ? (
+              <div className="p-8 space-y-3">
+                <Skeleton className="h-12 w-full bg-slate-800" />
+                <Skeleton className="h-12 w-full bg-slate-800" />
+                <Skeleton className="h-12 w-full bg-slate-800" />
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-slate-800 hover:bg-transparent">
+                    <TableHead className="text-xs text-slate-500 font-mono">TIMESTAMP</TableHead>
+                    <TableHead className="text-xs text-slate-500 font-mono">PROTOCOL</TableHead>
+                    <TableHead className="text-xs text-slate-500 font-mono">EVENT</TableHead>
+                    <TableHead className="text-xs text-slate-500 font-mono">STATUS</TableHead>
+                    <TableHead className="text-xs text-slate-500 text-right font-mono">SCORE</TableHead>
+                    <TableHead className="text-xs text-slate-500 text-right font-mono">IMPACT_Δ</TableHead>
                   </TableRow>
-                ) : (
-                  filteredEvents.map((event) => (
-                    <TableRow key={event.id} className="border-slate-800 hover:bg-slate-900/60 border-l-2 border-l-transparent hover:border-l-amber-500 transition-colors">
-                      <TableCell className="text-xs text-slate-400 font-mono whitespace-nowrap">{event.date}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-[10px] py-0 border-slate-700 text-slate-300 font-mono uppercase">
-                          {event.protocol}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-slate-300 font-mono text-xs">{event.desc}</TableCell>
-                      <TableCell>
-                        <span className={`text-xs font-mono ${event.status === 'Confirmed' ? 'text-emerald-500' : 'text-amber-500'}`}>
-                          [{event.status.toUpperCase()}]
-                        </span>
-                      </TableCell>
-                      <TableCell className={`text-right text-xs font-bold font-mono ${event.impact.startsWith('-') ? 'text-red-500' : 'text-emerald-500'}`}>
-                        {event.impact}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <button className="text-slate-500 hover:text-amber-500 transition-colors">
-                          <ExternalLink className="h-4 w-4 ml-auto" />
-                        </button>
+                </TableHeader>
+                <TableBody>
+                  {events.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="h-32 text-center text-slate-500 font-mono">
+                        <div className="flex flex-col items-center justify-center space-y-2">
+                          <span className="text-amber-500">{">"} NO_EVENTS_FOUND_</span>
+                          <span className="text-[10px]">Connect wallet and refresh reputation to see score history.</span>
+                        </div>
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                  ) : (
+                    events.map((event) => (
+                      <TableRow
+                        key={event.id}
+                        className="border-slate-800 hover:bg-slate-900/60 border-l-2 border-l-transparent hover:border-l-amber-500 transition-colors"
+                      >
+                        <TableCell className="text-xs text-slate-400 font-mono whitespace-nowrap">{event.date}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="text-[10px] py-0 border-slate-700 text-slate-300 font-mono uppercase">
+                            {event.protocol}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-xs text-slate-300 font-mono">{event.desc}</TableCell>
+                        <TableCell>
+                          <span className="text-xs font-mono text-emerald-500">[{event.status}]</span>
+                        </TableCell>
+                        <TableCell className="text-right text-xs font-bold font-mono text-amber-500">{event.score}</TableCell>
+                        <TableCell
+                          className={`text-right text-xs font-bold font-mono ${event.impact.startsWith("-") ? "text-red-500" : "text-emerald-500"}`}
+                        >
+                          {event.impact}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            )}
           </div>
         </CardContent>
       </Card>

@@ -7,10 +7,11 @@ import { CheckCircle2, XCircle } from "lucide-react";
 interface LoanStatusProps {
   score: number;
   minScore: number;
+  loanEligibility?: boolean;
 }
 
-export const LoanStatus = ({ score, minScore }: LoanStatusProps) => {
-  const isEligible = score >= minScore;
+export const LoanStatus = ({ score, minScore, loanEligibility }: LoanStatusProps) => {
+  const isEligible = loanEligibility !== undefined ? loanEligibility : score >= minScore;
   const progress = Math.min((score / minScore) * 100, 100);
 
   return (

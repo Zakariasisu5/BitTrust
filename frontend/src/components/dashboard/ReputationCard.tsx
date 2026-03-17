@@ -4,12 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Info } from "lucide-react";
-import { getTierFromScore, formatLastUpdated } from "@/lib/score-utils";
+import { getTierFromScore, getTierFromTrustLevel, formatLastUpdated, formatLastUpdatedIso } from "@/lib/score-utils";
 
 interface ReputationCardProps {
   score: number;
   tier?: string;
   label?: string;
+  trustLevel?: string;
   lastUpdated: number | string;
   isLoading?: boolean;
 }
@@ -18,14 +19,18 @@ export const ReputationCard = ({
   score,
   tier: tierProp,
   label: labelProp,
+  trustLevel,
   lastUpdated,
   isLoading = false,
 }: ReputationCardProps) => {
-  const { tier: derivedTier, label: derivedLabel } = getTierFromScore(score);
-  const tier = tierProp ?? derivedTier;
-  const label = labelProp ?? derivedLabel;
+  const fromTrust = trustLevel ? getTierFromTrustLevel(trustLevel) : null;
+  const fromScore = getTierFromScore(score);
+  const tier = tierProp ?? fromTrust?.tier ?? fromScore.tier;
+  const label = labelProp ?? fromTrust?.label ?? fromScore.label;
   const lastUpdatedStr =
-    typeof lastUpdated === "number" ? formatLastUpdated(lastUpdated) : lastUpdated;
+    typeof lastUpdated === "number"
+      ? formatLastUpdated(lastUpdated)
+      : formatLastUpdatedIso(lastUpdated);
 
   if (isLoading) {
     return (
