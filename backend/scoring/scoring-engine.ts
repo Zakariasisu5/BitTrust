@@ -1,6 +1,5 @@
 /**
  * BitTrust – Reputation Scoring Engine
- *
  * Converts raw WalletActivity into a normalized 0–100 score.
  *
  * Weight breakdown (matches docs/bittrust.md):
