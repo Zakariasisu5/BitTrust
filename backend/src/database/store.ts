@@ -39,7 +39,7 @@ export const getRedisClient = async (): Promise<RedisClientType | null> => {
 
   try {
     redisClient = createClient({ url: env.redisUrl });
-    redisClient.on("error", (err) => {
+    redisClient.on("error", (err: Error) => {
       logger.error("Redis client error", { err: String(err) });
     });
     await redisClient.connect();

@@ -50,11 +50,11 @@ export const fetchWalletStats = async (wallet: string): Promise<RawWalletStats> 
     axios.get(`${STACKS_API}/extended/v2/addresses/${trimmed}/transactions`, {
       params: { limit, offset: 0 },
       timeout: 8000,
-      validateStatus: (s) => (s >= 200 && s < 300) || s === 400 || s === 404,
+      validateStatus: (s: number) => (s >= 200 && s < 300) || s === 400 || s === 404,
     }),
     axios.get(`${STACKS_API}/extended/v2/addresses/${trimmed}/balances/stx`, {
       timeout: 8000,
-      validateStatus: (s) => (s >= 200 && s < 300) || s === 400 || s === 404,
+      validateStatus: (s: number) => (s >= 200 && s < 300) || s === 400 || s === 404,
     }),
   ]);
 
