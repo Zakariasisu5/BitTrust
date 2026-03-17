@@ -2,7 +2,9 @@
 
 import { useEffect } from "react";
 import { useWallet } from "@/context/WalletContext";
-import { useReputationScore } from "@/hooks/useContractRead";
+import { useReputationQuery } from "@/hooks/useReputationQuery";
+import { useReputationHistoryQuery } from "@/hooks/useReputationHistoryQuery";
+import { useUpdateReputationMutation } from "@/hooks/useUpdateReputationMutation";
 import { ReputationCard } from "@/components/dashboard/ReputationCard";
 import { LoanStatus } from "@/components/dashboard/LoanStatus";
 import { ScoreChart } from "@/components/dashboard/ScoreChart";
@@ -14,25 +16,32 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { RefreshCw, ArrowUpRight, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { formatLastUpdatedIso } from "@/lib/score-utils";
 
 export function DashboardContent() {
   const { isConnected, connect, address } = useWallet();
-  const {
-    displayScore,
-    lastUpdated,
-    txCount,
-    isLoading: scoreLoading,
-    error: scoreError,
-  } = useReputationScore(address ?? null);
+  const reputationQuery = useReputationQuery(address ?? null);
+  const historyQuery = useReputationHistoryQuery(address ?? null);
+  const updateMutation = useUpdateReputationMutation();
   const { toast } = useToast();
 
+  const data = reputationQuery.data;
+  const displayScore = data ? data.reputationScore * 10 : 0;
+  const scoreLoading = reputationQuery.isLoading;
+  const scoreError = reputationQuery.error;
+
   const handleRefresh = () => {
-    window.location.reload();
+    if (address) {
+      updateMutation.mutate(address, {
+        onSuccess: () => toast({ title: "Reputation updated", description: "Score recalculated successfully." }),
+        onError: (err) => toast({ title: "Refresh failed", description: String(err), variant: "destructive" }),
+      });
+    }
   };
 
   useEffect(() => {
     if (scoreError) {
-      toast({ title: "Error", description: scoreError, variant: "destructive" });
+      toast({ title: "Error", description: String(scoreError), variant: "destructive" });
     }
   }, [scoreError, toast]);
 
@@ -51,7 +60,7 @@ export function DashboardContent() {
     );
   }
 
-  const isLoading = scoreLoading;
+  const isLoading = scoreLoading || updateMutation.isPending;
 
   return (
     <div className="space-y-8 pb-10">
@@ -91,14 +100,16 @@ export function DashboardContent() {
       ) : (
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <ReputationCard 
-              score={displayScore} 
-              lastUpdated={lastUpdated}
+            <ReputationCard
+              score={displayScore}
+              trustLevel={data?.trustLevel}
+              lastUpdated={data?.lastUpdated ?? "Never"}
               isLoading={scoreLoading}
             />
-            <LoanStatus 
-              score={displayScore} 
-              minScore={650} 
+            <LoanStatus
+              score={displayScore}
+              minScore={650}
+              loanEligibility={data?.loanEligibility}
             />
             <CreditsCard address={address} />
             <div className="matte-card relative overflow-hidden shadow-2xl flex flex-col">
@@ -122,10 +133,23 @@ export function DashboardContent() {
 
           <div className="grid gap-6 md:grid-cols-3">
             <div className="md:col-span-2">
-              <ScoreChart currentScore={displayScore} />
+              <ScoreChart
+                history={
+                  historyQuery.data?.length
+                    ? historyQuery.data
+                        .slice()
+                        .reverse()
+                        .map((e) => ({
+                          date: formatLastUpdatedIso(e.lastUpdated),
+                          score: e.reputationScore * 10,
+                        }))
+                    : undefined
+                }
+                currentScore={displayScore}
+              />
             </div>
             <div>
-              <FactorBreakdown txCount={txCount} />
+              <FactorBreakdown metrics={data?.metrics} txCount={data?.metrics?.transactionCount} />
             </div>
           </div>
 

@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Info } from "lucide-react";
+import type { WalletMetrics } from "@/types/backend";
 
 const defaultFactors = [
   { name: "Wallet Age", value: "3.2 Years", impact: "+45", color: "text-emerald-500" },
@@ -13,16 +14,23 @@ const defaultFactors = [
 
 interface FactorBreakdownProps {
   txCount?: number;
+  metrics?: WalletMetrics;
 }
 
-export const FactorBreakdown = ({ txCount }: FactorBreakdownProps) => {
-  const factors =
+export const FactorBreakdown = ({ txCount, metrics }: FactorBreakdownProps) => {
+  const metricFactors = metrics
+    ? [
+        { name: "Wallet Age", value: `${metrics.walletAgeDays} days`, impact: "", color: "text-slate-400" as const },
+        { name: "Tx Count", value: `${metrics.transactionCount}`, impact: "", color: "text-slate-400" as const },
+        { name: "Volume (STX)", value: metrics.transactionVolumeStx.toFixed(2), impact: "", color: "text-slate-400" as const },
+        { name: "Protocols", value: `${metrics.protocolInteractions}`, impact: "", color: "text-slate-400" as const },
+      ]
+    : [];
+  const txFactor =
     txCount !== undefined && txCount > 0
-      ? [
-          ...defaultFactors,
-          { name: "On-Chain Tx Count", value: `${txCount}`, impact: "", color: "text-slate-400" as const },
-        ]
-      : defaultFactors;
+      ? [{ name: "On-Chain Tx Count", value: `${txCount}`, impact: "", color: "text-slate-400" as const }]
+      : [];
+  const factors = metricFactors.length > 0 ? metricFactors : [...defaultFactors, ...txFactor];
   return (
     <Card className="matte-card">
       <div className="absolute inset-0 bg-grid-slate-900 opacity-20 pointer-events-none" />

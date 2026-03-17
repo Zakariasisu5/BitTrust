@@ -1,7 +1,9 @@
 "use client";
 
 import { useWallet } from "@/context/WalletContext";
-import { useReputationScore, useCreditsBalance } from "@/hooks/useContractRead";
+import { useReputationQuery } from "@/hooks/useReputationQuery";
+import { useReputationHistoryQuery } from "@/hooks/useReputationHistoryQuery";
+import { useCreditsBalance } from "@/hooks/useContractRead";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,12 +18,19 @@ import {
   FileJson,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { formatLastUpdatedIso } from "@/lib/score-utils";
 
 export function ProfileContent() {
   const { address, isConnected, network } = useWallet();
   const { toast } = useToast();
-  const { displayScore, txCount, isLoading: scoreLoading } = useReputationScore(address ?? null);
+  const reputationQuery = useReputationQuery(address ?? null);
+  const historyQuery = useReputationHistoryQuery(address ?? null);
   const { balance: creditsBalance } = useCreditsBalance(address ?? null);
+
+  const data = reputationQuery.data;
+  const displayScore = data ? data.reputationScore * 10 : 0;
+  const scoreLoading = reputationQuery.isLoading;
+  const txCount = data?.metrics?.transactionCount;
 
   const handleCopy = () => {
     if (address) {
@@ -80,7 +89,7 @@ export function ProfileContent() {
                     <Badge className="bg-slate-800 text-slate-300 border-slate-700">
                       CREDITS: {creditsBalance}
                     </Badge>
-                    {txCount > 0 && (
+                    {txCount !== undefined && txCount > 0 && (
                       <Badge className="bg-slate-800 text-slate-400 border-slate-700">
                         TX_COUNT: {txCount}
                       </Badge>
@@ -159,29 +168,51 @@ export function ProfileContent() {
         </CardHeader>
         <CardContent className="pt-6 relative z-10">
           <div className="space-y-6">
-            {[
-              { date: "2025-03-01", old: 712, new: 732, reason: "[DEFI_OK] Loan repayment verified on-chain" },
-              { date: "2025-02-15", old: 707, new: 712, reason: "[GOV_OK] Governance vote interaction bonus" },
-              { date: "2025-02-01", old: 680, new: 707, reason: "[VOL_OK] Monthly transaction volume bonus" },
-              { date: "2025-01-15", old: 650, new: 680, reason: "[SYS_OK] Wallet age milestone: 3 years" },
-            ].map((row, i) => (
-              <div key={i} className="flex items-center justify-between border-l-2 border-transparent hover:border-amber-500 hover:bg-slate-900/40 p-2 rounded transition-all">
-                <div className="space-y-1">
-                  <p className="text-xs text-slate-500 font-mono">{row.date}</p>
-                  <p className="text-xs sm:text-sm text-slate-300 font-mono">{row.reason}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <p className="text-[10px] text-slate-500 uppercase font-mono">DELTA</p>
-                    <p className="text-sm font-bold text-emerald-500 font-mono">+{row.new - row.old}</p>
-                  </div>
-                  <div className="text-right w-16">
-                    <p className="text-[10px] text-slate-500 uppercase font-mono">SCORE</p>
-                    <p className="text-sm font-bold text-slate-100 font-mono">{row.new}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {historyQuery.data && historyQuery.data.length > 0 ? (
+              historyQuery.data
+                .slice()
+                .reverse()
+                .map((entry, i) => {
+                  const prev = historyQuery.data?.[historyQuery.data.length - 2 - i];
+                  const oldScore = prev ? prev.reputationScore * 10 : 0;
+                  const newScore = entry.reputationScore * 10;
+                  const delta = newScore - oldScore;
+                  return (
+                    <div
+                      key={entry.lastUpdated + i}
+                      className="flex items-center justify-between border-l-2 border-transparent hover:border-amber-500 hover:bg-slate-900/40 p-2 rounded transition-all"
+                    >
+                      <div className="space-y-1">
+                        <p className="text-xs text-slate-500 font-mono">
+                          {formatLastUpdatedIso(entry.lastUpdated)}
+                        </p>
+                        <p className="text-xs sm:text-sm text-slate-300 font-mono">
+                          [SYS_OK] Score update
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-[10px] text-slate-500 uppercase font-mono">DELTA</p>
+                          <p
+                            className={`text-sm font-bold font-mono ${delta >= 0 ? "text-emerald-500" : "text-red-500"}`}
+                          >
+                            {delta >= 0 ? "+" : ""}
+                            {delta}
+                          </p>
+                        </div>
+                        <div className="text-right w-16">
+                          <p className="text-[10px] text-slate-500 uppercase font-mono">SCORE</p>
+                          <p className="text-sm font-bold text-slate-100 font-mono">{newScore}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+            ) : (
+              <p className="text-sm text-slate-500 font-mono py-4">
+                No reputation history yet.
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

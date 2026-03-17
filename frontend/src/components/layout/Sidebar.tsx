@@ -15,6 +15,7 @@ import {
 import {
   LayoutDashboard,
   User,
+  Trophy,
   BookOpen,
   ShieldCheck,
   Activity,
@@ -28,6 +29,7 @@ import {
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: User, label: "Profile", href: "/profile" },
+  { icon: Trophy, label: "Leaderboard", href: "/leaderboard" },
   { icon: Activity, label: "Activity", href: "/activity" },
   { icon: ShieldCheck, label: "Verification", href: "/verification" },
   { icon: Settings, label: "Settings", href: "/settings" },
