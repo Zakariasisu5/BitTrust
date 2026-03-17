@@ -25,11 +25,12 @@ export interface ScoreFactor {
 }
 
 export interface ScoringResult {
-  score: number; // 0–100, integer
-  tier: string; // A+, A, B, C
+  wallet: string;
+  score: number;
+  tier: string;
   tierLabel: string;
+  explanation: string;
   factors: ScoreFactor[];
-  explanation: string; // plain-language summary
   breakdown: {
     walletAge: number;
     txQuality: number;
@@ -37,11 +38,10 @@ export interface ScoringResult {
     communityEngagement: number;
   };
   metadata: {
-    address: string;
     network: string;
     totalTxsAnalyzed: number;
-    scoredAt: number;
   };
+  scoredAt: number;
 }
 
 // ── Per-factor scoring helpers ────────────────────────────────────────────────
@@ -267,17 +267,17 @@ export function calculateReputationScore(
   ];
 
   return {
+    wallet: activity.address,
     score,
     tier,
     tierLabel,
+    explanation,
     factors,
-    explanation: generateExplanation(score, activity, breakdown),
     breakdown,
     metadata: {
-      address: activity.address,
       network: activity.network,
       totalTxsAnalyzed: activity.totalTxCount,
-      scoredAt: Date.now(),
     },
+    scoredAt: Date.now(),
   };
 }
