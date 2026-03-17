@@ -77,7 +77,7 @@ Same flow — fetchWalletActivity + calculateReputationScore — return same sha
 
 ### GET /api/reputation/history/:wallet
 
-Requires Selassie to store each score result in DB with timestamp.
+Requires Selassie (backend) to store each score result in DB with timestamp.
 Scoring engine returns one score per call — history is built by saving results over time.
 
 ### GET /api/leaderboard
