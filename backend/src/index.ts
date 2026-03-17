@@ -14,8 +14,21 @@ app.set("trust proxy", 1);
 
 app.use(helmet());
 
+const rawOrigin = env.frontendUrl ?? "*";
+const allowedOrigin =
+  rawOrigin === "*"
+    ? "*"
+    : (() => {
+        try {
+          const u = new URL(rawOrigin);
+          return u.origin; // strips any path, always just scheme+host+port
+        } catch {
+          return rawOrigin;
+        }
+      })();
+
 const corsOptions: cors.CorsOptions = {
-  origin: env.frontendUrl ?? "*",
+  origin: allowedOrigin,
 };
 app.use(cors(corsOptions));
 
