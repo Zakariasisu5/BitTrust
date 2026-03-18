@@ -6,7 +6,6 @@ import {
 } from "../services/verificationService";
 import type { ProviderType } from "../models/verification";
 import { PROVIDER_BONUS } from "../models/verification";
-import { logger } from "../utils/logger";
 
 const VALID_PROVIDERS: ProviderType[] = ["github", "twitter", "discord", "bns"];
 
