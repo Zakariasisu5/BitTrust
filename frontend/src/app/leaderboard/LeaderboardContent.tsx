@@ -151,3 +151,5 @@ export function LeaderboardContent() {
     </div>
   );
 }
+
+export default LeaderboardContent;
