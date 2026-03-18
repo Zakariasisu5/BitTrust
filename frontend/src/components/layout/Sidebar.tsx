@@ -137,7 +137,9 @@ export const Sidebar = () => {
             <div className="flex flex-col gap-3 px-2">
               <div className="flex items-center justify-between px-2 font-mono text-[10px]">
                 <span className="text-slate-500">NET_ENV</span>
-                <span className="text-amber-500 uppercase">{network}</span>
+                <span className={`uppercase font-bold ${network === "mainnet" ? "text-emerald-400" : "text-amber-500"}`}>
+                  {network}
+                </span>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

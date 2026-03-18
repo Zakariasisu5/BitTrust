@@ -22,8 +22,8 @@ const TIER_COLORS: Record<string, string> = {
 export function ProfileContent() {
   const { address, isConnected, network } = useWallet();
   const { toast } = useToast();
-  const reputationQuery = useReputationQuery(address ?? null);
-  const historyQuery = useReputationHistoryQuery(address ?? null);
+  const reputationQuery = useReputationQuery(address ?? null, network);
+  const historyQuery = useReputationHistoryQuery(address ?? null, network);
   const contractScore = useReputationScore(address ?? null);
   const { balance: creditsBalance } = useCreditsBalance(address ?? null);
 

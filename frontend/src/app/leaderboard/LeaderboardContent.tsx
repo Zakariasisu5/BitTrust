@@ -1,6 +1,7 @@
 "use client";
 
 import { useLeaderboardQuery } from "@/hooks/useLeaderboardQuery";
+import { useWallet } from "@/context/WalletContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,15 +13,23 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Trophy, AlertCircle } from "lucide-react";
+import { Trophy, AlertCircle, Copy, ExternalLink } from "lucide-react";
 import { toDisplayScore } from "@/lib/score-utils";
+import { useToast } from "@/hooks/use-toast";
 
 function truncateWallet(addr: string) {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
 }
 
 export function LeaderboardContent() {
-  const { data: entries, isLoading, error } = useLeaderboardQuery();
+  const { network } = useWallet();
+  const { data: entries, isLoading, error } = useLeaderboardQuery(network);
+  const { toast } = useToast();
+
+  const copyAddress = (addr: string) => {
+    navigator.clipboard.writeText(addr);
+    toast({ title: "Copied", description: addr });
+  };
 
   if (isLoading) {
     return (
@@ -121,7 +130,25 @@ export function LeaderboardContent() {
                       #{i + 1}
                     </TableCell>
                     <TableCell className="font-mono text-slate-200">
-                      {truncateWallet(entry.wallet)}
+                      <div className="flex items-center gap-1">
+                        <span>{truncateWallet(entry.wallet)}</span>
+                        <button
+                          onClick={() => copyAddress(entry.wallet)}
+                          className="text-slate-600 hover:text-amber-500 transition-colors"
+                          title="Copy address"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </button>
+                        <a
+                          href={`https://explorer.hiro.so/address/${entry.wallet}?chain=mainnet`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-slate-600 hover:text-amber-500 transition-colors"
+                          title="View on Hiro Explorer"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </div>
                     </TableCell>
                     <TableCell className="text-right font-mono font-bold text-amber-500">
                       {toDisplayScore(entry.reputationScore)}

@@ -19,9 +19,9 @@ import Link from "next/link";
 import { formatLastUpdatedIso, toDisplayScore } from "@/lib/score-utils";
 
 export function DashboardContent() {
-  const { isConnected, connect, address } = useWallet();
-  const reputationQuery = useReputationQuery(address ?? null);
-  const historyQuery = useReputationHistoryQuery(address ?? null);
+  const { isConnected, connect, address, network } = useWallet();
+  const reputationQuery = useReputationQuery(address ?? null, network);
+  const historyQuery = useReputationHistoryQuery(address ?? null, network);
   const updateMutation = useUpdateReputationMutation();
   const { toast } = useToast();
 
@@ -32,7 +32,7 @@ export function DashboardContent() {
 
   const handleRefresh = () => {
     if (address) {
-      updateMutation.mutate(address, {
+      updateMutation.mutate({ wallet: address, network }, {
         onSuccess: () => toast({ title: "Reputation updated", description: "Score recalculated successfully." }),
         onError: (err) => toast({ title: "Refresh failed", description: String(err), variant: "destructive" }),
       });

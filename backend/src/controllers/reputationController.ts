@@ -11,11 +11,10 @@ import {
 import { getRedisClient } from "../database/store";
 import type { WalletScore } from "../models/walletScore";
 import { logger } from "../utils/logger";
+import { getVerificationBonus } from "../services/verificationService";
 
 const CACHE_TTL_SECONDS = 300;
 const cacheKey = (wallet: string) => `score:${wallet}`;
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function resolveNetwork(query: unknown): NetworkMode {
   return query === "mainnet" ? "mainnet" : "testnet";
@@ -26,9 +25,12 @@ async function computeScore(wallet: string, network: NetworkMode): Promise<Walle
   const result = calculateReputationScore(activity);
   const { trustLevel, loanEligibility } = assessTrust(result.score);
 
+  const verificationBonus = getVerificationBonus(wallet);
+  const finalScore = Math.min(100, result.score + verificationBonus);
+
   return {
     wallet,
-    reputationScore: result.score,
+    reputationScore: finalScore,
     tier: result.tier,
     tierLabel: result.tierLabel,
     trustLevel,
@@ -57,8 +59,6 @@ function buildResponse(score: WalletScore) {
   };
 }
 
-// ── Controllers ───────────────────────────────────────────────────────────────
-
 export const getReputation = async (
   req: Request<{ wallet: string }>,
   res: Response,
@@ -68,7 +68,6 @@ export const getReputation = async (
     const wallet = req.params.wallet.trim();
     const network = resolveNetwork(req.query.network);
 
-    // 1. Redis cache
     const redis = await getRedisClient();
     if (redis) {
       try {
@@ -81,13 +80,11 @@ export const getReputation = async (
       }
     }
 
-    // 2. In-memory store
     const existing = getWalletScore(wallet);
     if (existing) {
       return res.json(buildResponse(existing));
     }
 
-    // 3. Compute fresh
     const score = await computeScore(wallet, network);
     updateWalletScore(score);
 
@@ -122,11 +119,9 @@ export const postUpdateReputation = async (
     }
     const network = resolveNetwork(req.query.network);
 
-    // Always recompute on explicit update
     const score = await computeScore(wallet, network);
     updateWalletScore(score);
 
-    // Invalidate Redis cache so next GET returns fresh data
     const redis = await getRedisClient();
     if (redis) {
       try {

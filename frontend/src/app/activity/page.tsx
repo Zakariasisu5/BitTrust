@@ -14,11 +14,11 @@ import { useWallet } from "@/context/WalletContext";
 import { useReputationHistoryQuery } from "@/hooks/useReputationHistoryQuery";
 import { AlertCircle, Filter } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatLastUpdatedIso } from "@/lib/score-utils";
+import { formatLastUpdatedIso, toDisplayScore } from "@/lib/score-utils";
 
 export default function ActivityPage() {
-  const { isConnected, address } = useWallet();
-  const { data: history, isLoading } = useReputationHistoryQuery(address ?? null);
+  const { isConnected, address, network } = useWallet();
+  const { data: history, isLoading } = useReputationHistoryQuery(address ?? null, network);
 
   const events =
     history && history.length > 0
@@ -27,8 +27,8 @@ export default function ActivityPage() {
           .reverse()
           .map((entry, i) => {
             const prev = history[history.length - 2 - i];
-            const oldScore = prev ? prev.reputationScore * 10 : 0;
-            const newScore = entry.reputationScore * 10;
+            const oldScore = prev ? toDisplayScore(prev.reputationScore) : 0;
+            const newScore = toDisplayScore(entry.reputationScore);
             const delta = newScore - oldScore;
             return {
               id: entry.lastUpdated + i,

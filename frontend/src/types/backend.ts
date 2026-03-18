@@ -30,3 +30,18 @@ export interface ReputationResponse {
   };
   lastUpdated: string;
 }
+
+export type ProviderType = "github" | "twitter" | "discord" | "bns";
+
+export interface VerifiedProvider {
+  provider: ProviderType;
+  handle: string;
+  verifiedAt: string;
+  bonus: number;
+}
+
+export interface WalletVerification {
+  wallet: string;
+  providers: VerifiedProvider[];
+  totalBonus: number;
+}

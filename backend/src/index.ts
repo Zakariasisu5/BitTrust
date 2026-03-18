@@ -16,7 +16,6 @@ app.use(helmet());
 
 const rawOrigin = env.frontendUrl ?? "*";
 
-// Support comma-separated list of allowed origins e.g. "https://foo.vercel.app,http://localhost:3000"
 const allowedOrigins: string[] =
   rawOrigin === "*"
     ? ["*"]
@@ -30,7 +29,6 @@ const allowedOrigins: string[] =
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (curl, Postman, server-to-server)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
       return callback(null, true);
@@ -44,7 +42,6 @@ app.use(cors(corsOptions));
 app.use(compression());
 app.use(express.json());
 
-// Logging
 app.use(
   morgan(env.nodeEnv === "production" ? "combined" : "dev", {
     stream: {
@@ -53,7 +50,6 @@ app.use(
   })
 );
 
-// Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 300,
@@ -62,31 +58,18 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Health check
 app.get("/health", (_req: Request, res: Response) => {
   res.json({ status: "ok", env: env.nodeEnv });
 });
 
-// Mount BitTrust reputation routes
 app.use("/api", reputationRoutes);
 
-// 🔹 Temporary POST test for debugging
-app.post("/api/test-post", (req: Request, res: Response) => {
-  logger.info("POST /api/test-post hit", { body: req.body });
-  res.json({
-    message: "POST route works!",
-    received: req.body,
-  });
-});
-
-// 404 handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     error: { message: "Not Found", path: req.path },
   });
 });
 
-// Global error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   logger.error("Unhandled error", { error: String(err) });
   const status = err?.statusCode && Number.isInteger(err.statusCode) ? err.statusCode : 500;
@@ -97,12 +80,10 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-// Start server
 const server = app.listen(env.port, () => {
   logger.info(`BitTrust backend listening on port ${env.port}`);
 });
 
-// Handle port errors
 server.on("error", (err: any) => {
   if (err?.code === "EADDRINUSE") {
     logger.error(`Port ${env.port} is already in use.`, {
@@ -112,7 +93,6 @@ server.on("error", (err: any) => {
   }
 });
 
-// Graceful shutdown
 const shutdown = (signal: string) => {
   logger.info(`Received ${signal}, shutting down gracefully...`);
   server.close(() => {
