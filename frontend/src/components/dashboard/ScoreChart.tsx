@@ -53,10 +53,10 @@ export const ScoreChart = ({ history, currentScore }: ScoreChartProps) => {
               fontSize={12} 
               tickLine={false} 
               axisLine={false} 
-              domain={([dataMin, dataMax]: [number, number]) => [
+              domain={([dataMin, dataMax]: readonly [number, number]) => [
                 Math.max(0, Math.floor(dataMin / 100) * 100 - 100),
                 Math.min(1000, Math.ceil(dataMax / 100) * 100 + 100),
-              ]}
+              ] as [number, number]}
               tick={{ fontFamily: 'monospace' }}
             />
             <Tooltip 
