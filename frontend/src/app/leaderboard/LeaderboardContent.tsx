@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, AlertCircle } from "lucide-react";
+import { toDisplayScore } from "@/lib/score-utils";
 
 function truncateWallet(addr: string) {
   return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -123,7 +124,7 @@ export function LeaderboardContent() {
                       {truncateWallet(entry.wallet)}
                     </TableCell>
                     <TableCell className="text-right font-mono font-bold text-amber-500">
-                      {entry.reputationScore * 10}
+                      {toDisplayScore(entry.reputationScore)}
                     </TableCell>
                     <TableCell>
                       <Badge

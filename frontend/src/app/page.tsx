@@ -34,10 +34,10 @@ export default function Home() {
               <Image
                 src="/logo.png"
                 alt="BitTrust Logo"
-                width={400}
-                height={120}
-                className="h-auto w-80 object-contain"
-                priority
+                width={320}
+                height={96}
+                className="w-80 object-contain"
+                style={{ height: "auto" }}
               />
             </div>
 

@@ -1,7 +1,15 @@
+// Backend returns reputationScore as 0–100.
+// We display it as 0–1000 (multiply by 10) for user-facing UI.
+
+export function toDisplayScore(score: number): number {
+  return Math.round(score * 10);
+}
+
 export function getTierFromScore(score: number): { tier: string; label: string } {
-  if (score >= 801) return { tier: "A+", label: "Highly Trusted" };
-  if (score >= 601) return { tier: "A", label: "Trusted / Low Risk" };
-  if (score >= 301) return { tier: "B", label: "Medium Risk" };
+  // score is 0–100 (backend scale)
+  if (score >= 81) return { tier: "A+", label: "Highly Trusted" };
+  if (score >= 61) return { tier: "A", label: "Trusted / Low Risk" };
+  if (score >= 31) return { tier: "B", label: "Medium Risk" };
   return { tier: "C", label: "High Risk" };
 }
 
@@ -32,7 +40,9 @@ export function formatLastUpdatedIso(iso: string): string {
   if (!iso) return "Never";
   try {
     const d = new Date(iso);
-    return Number.isFinite(d.getTime()) ? d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Never";
+    return Number.isFinite(d.getTime())
+      ? d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "Never";
   } catch {
     return "Never";
   }

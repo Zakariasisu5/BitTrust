@@ -16,7 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { RefreshCw, ArrowUpRight, AlertCircle } from "lucide-react";
 import Link from "next/link";
-import { formatLastUpdatedIso } from "@/lib/score-utils";
+import { formatLastUpdatedIso, toDisplayScore } from "@/lib/score-utils";
 
 export function DashboardContent() {
   const { isConnected, connect, address } = useWallet();
@@ -26,7 +26,7 @@ export function DashboardContent() {
   const { toast } = useToast();
 
   const data = reputationQuery.data;
-  const displayScore = data ? data.reputationScore * 10 : 0;
+  const displayScore = data ? toDisplayScore(data.reputationScore) : 0;
   const scoreLoading = reputationQuery.isLoading;
   const scoreError = reputationQuery.error;
 
@@ -141,7 +141,7 @@ export function DashboardContent() {
                         .reverse()
                         .map((e) => ({
                           date: formatLastUpdatedIso(e.lastUpdated),
-                          score: e.reputationScore * 10,
+                          score: toDisplayScore(e.reputationScore),
                         }))
                     : undefined
                 }

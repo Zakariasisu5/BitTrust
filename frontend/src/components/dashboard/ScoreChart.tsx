@@ -36,8 +36,8 @@ export const ScoreChart = ({ history, currentScore }: ScoreChartProps) => {
       <CardHeader className="relative z-10">
         <CardTitle className="text-sm font-medium text-slate-400 font-mono">[{'>'} REPUTATION_HISTORY_90D]</CardTitle>
       </CardHeader>
-      <CardContent className="h-[300px] w-full pt-4 relative z-10">
-        <ResponsiveContainer width="100%" height="100%">
+      <CardContent className="w-full pt-4 relative z-10">
+        <ResponsiveContainer width="100%" height={300}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
             <XAxis 
@@ -53,7 +53,10 @@ export const ScoreChart = ({ history, currentScore }: ScoreChartProps) => {
               fontSize={12} 
               tickLine={false} 
               axisLine={false} 
-              domain={[600, 800]}
+              domain={([dataMin, dataMax]: [number, number]) => [
+                Math.max(0, Math.floor(dataMin / 100) * 100 - 100),
+                Math.min(1000, Math.ceil(dataMax / 100) * 100 + 100),
+              ]}
               tick={{ fontFamily: 'monospace' }}
             />
             <Tooltip 

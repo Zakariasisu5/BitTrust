@@ -18,7 +18,7 @@ import {
   FileJson,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { formatLastUpdatedIso } from "@/lib/score-utils";
+import { formatLastUpdatedIso, toDisplayScore } from "@/lib/score-utils";
 
 export function ProfileContent() {
   const { address, isConnected, network } = useWallet();
@@ -28,7 +28,7 @@ export function ProfileContent() {
   const { balance: creditsBalance } = useCreditsBalance(address ?? null);
 
   const data = reputationQuery.data;
-  const displayScore = data ? data.reputationScore * 10 : 0;
+  const displayScore = data ? toDisplayScore(data.reputationScore) : 0;
   const scoreLoading = reputationQuery.isLoading;
   const txCount = data?.metadata?.totalTxsAnalyzed;
 
@@ -97,11 +97,13 @@ export function ProfileContent() {
                   </>
                 )}
                 <div className="flex items-center gap-1 text-xs text-slate-500">
-                  <Calendar className="h-3 w-3" /> INIT: 2022-03
+                  <Calendar className="h-3 w-3" /> LAST_UPDATED: {data?.lastUpdated ? formatLastUpdatedIso(data.lastUpdated) : "—"}
                 </div>
-                <div className="flex items-center gap-1 text-xs text-slate-500">
-                  AGE: 3.2Y
-                </div>
+                {txCount !== undefined && (
+                  <div className="flex items-center gap-1 text-xs text-slate-500">
+                    TXS_ANALYZED: {txCount}
+                  </div>
+                )}
               </div>
             </div>
             <Button variant="outline" className="secondary-btn border-slate-800 gap-2 font-mono text-xs">
@@ -121,19 +123,24 @@ export function ProfileContent() {
           </CardHeader>
           <CardContent className="relative z-10">
             <ul className="space-y-4">
-              {[
-                "Early Stacks ecosystem participant",
-                "100% successful loan repayment history",
-                "Regular interaction with verified smart contracts",
-                "Active participation in DAO governance",
-                "Significant transaction volume (total > 50k STX)",
-              ].map((signal, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-slate-300 font-mono text-xs">
-                  <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_#10B981]" />
-                  {signal}
-                </li>
-              ))}
+              {data?.factors
+                ? data.factors
+                    .filter((f) => f.contribution > 0)
+                    .map((f) => (
+                      <li key={f.name} className="flex items-start gap-3 text-sm text-slate-300 font-mono text-xs">
+                        <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_#10B981]" />
+                        {f.label}: {f.raw} (+{f.contribution}/{f.max} pts)
+                      </li>
+                    ))
+                : Array.from({ length: 3 }).map((_, i) => (
+                    <li key={i} className="h-4 bg-slate-800 rounded animate-pulse" />
+                  ))}
             </ul>
+            {data?.explanation && (
+              <p className="mt-4 text-[10px] text-slate-500 font-mono border-t border-slate-800 pt-3">
+                {data.explanation}
+              </p>
+            )}
           </CardContent>
         </Card>
 
@@ -145,15 +152,36 @@ export function ProfileContent() {
             </CardTitle>
           </CardHeader>
           <CardContent className="relative z-10">
-            <div className="flex flex-col items-center justify-center h-full py-8 text-center">
-              <div className="h-12 w-12 rounded-full bg-[#050816] flex items-center justify-center border border-slate-800 mb-4">
-                <ThumbsUp className="h-5 w-5 text-emerald-500/50" />
+            {data?.factors ? (
+              data.factors.filter((f) => f.contribution < f.max * 0.3).length > 0 ? (
+                <ul className="space-y-4">
+                  {data.factors
+                    .filter((f) => f.contribution < f.max * 0.3)
+                    .map((f) => (
+                      <li key={f.name} className="flex items-start gap-3 text-sm text-slate-300 font-mono text-xs">
+                        <div className="mt-1 h-1.5 w-1.5 rounded-full bg-red-500" />
+                        Low {f.label}: {f.raw} ({f.contribution}/{f.max} pts)
+                      </li>
+                    ))}
+                </ul>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full py-8 text-center">
+                  <div className="h-12 w-12 rounded-full bg-[#050816] flex items-center justify-center border border-slate-800 mb-4">
+                    <ThumbsUp className="h-5 w-5 text-emerald-500/50" />
+                  </div>
+                  <p className="text-sm font-mono text-slate-200">NO_RISKS_DETECTED</p>
+                  <p className="text-xs text-slate-500 mt-2 font-mono max-w-[250px]">
+                    {"// Identity scan complete. Zero malicious patterns found."}
+                  </p>
+                </div>
+              )
+            ) : (
+              <div className="space-y-3 animate-pulse">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="h-4 bg-slate-800 rounded" />
+                ))}
               </div>
-              <p className="text-sm font-mono text-slate-200">NO_RISKS_DETECTED</p>
-              <p className="text-xs text-slate-500 mt-2 font-mono max-w-[250px]">
-                {"// Identity scan complete. Zero malicious patterns found."}
-              </p>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -174,8 +202,8 @@ export function ProfileContent() {
                 .reverse()
                 .map((entry, i) => {
                   const prev = historyQuery.data?.[historyQuery.data.length - 2 - i];
-                  const oldScore = prev ? prev.reputationScore * 10 : 0;
-                  const newScore = entry.reputationScore * 10;
+                  const oldScore = prev ? toDisplayScore(prev.reputationScore) : 0;
+                  const newScore = toDisplayScore(entry.reputationScore);
                   const delta = newScore - oldScore;
                   return (
                     <div

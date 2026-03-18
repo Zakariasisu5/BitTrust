@@ -15,20 +15,29 @@ app.set("trust proxy", 1);
 app.use(helmet());
 
 const rawOrigin = env.frontendUrl ?? "*";
-const allowedOrigin =
+
+// Support comma-separated list of allowed origins e.g. "https://foo.vercel.app,http://localhost:3000"
+const allowedOrigins: string[] =
   rawOrigin === "*"
-    ? "*"
-    : (() => {
+    ? ["*"]
+    : rawOrigin.split(",").map((o) => {
         try {
-          const u = new URL(rawOrigin);
-          return u.origin; // strips any path, always just scheme+host+port
+          return new URL(o.trim()).origin;
         } catch {
-          return rawOrigin;
+          return o.trim();
         }
-      })();
+      });
 
 const corsOptions: cors.CorsOptions = {
-  origin: allowedOrigin,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
 };
 app.use(cors(corsOptions));
 
