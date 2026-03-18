@@ -101,14 +101,15 @@ export function DashboardContent() {
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <ReputationCard
-              score={displayScore}
-              trustLevel={data?.trustLevel}
-              lastUpdated={data?.lastUpdated ?? "Never"}
+              score={data?.reputationScore ?? 0}
+              tier={data?.tier}
+              tierLabel={data?.tierLabel}
+              explanation={data?.explanation}
+              lastUpdated={data?.lastUpdated ?? ""}
               isLoading={scoreLoading}
             />
             <LoanStatus
-              score={displayScore}
-              minScore={650}
+              score={data?.reputationScore ?? 0}
               loanEligibility={data?.loanEligibility}
             />
             <CreditsCard address={address} />
