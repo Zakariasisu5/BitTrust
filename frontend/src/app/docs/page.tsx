@@ -106,7 +106,7 @@ export default function DocsPage() {
                       Full source code, examples, and contribution guidelines.
                     </p>
                     <Button asChild variant="outline" size="sm" className="w-full font-mono text-xs">
-                      <a href="https://github.com/yourusername/BitTrust" target="_blank" rel="noopener noreferrer">
+                      <a href="https://github.com/Zakariasisu5/BitTrust" target="_blank" rel="noopener noreferrer">
                         View on GitHub →
                       </a>
                     </Button>
@@ -134,7 +134,7 @@ console.log(data.reputationScore); // 0-100`}
                   </a>
                 </Button>
                 <Button asChild variant="outline" className="secondary-btn border-slate-700 font-mono text-xs">
-                  <a href="https://github.com/yourusername/BitTrust" target="_blank" rel="noopener noreferrer">
+                  <a href="https://github.com/Zakariasisu5/BitTrust" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-3 w-3" />
                     View Source Code
                   </a>
@@ -158,7 +158,7 @@ console.log(data.reputationScore); // 0-100`}
                   Complete backend API documentation including endpoints, authentication, and examples.
                 </p>
                 <Button asChild className="primary-btn font-mono text-xs mb-6">
-                  <a href="/docs/backend.md" target="_blank" rel="noopener noreferrer">
+                  <a href="https://github.com/Zakariasisu5/BitTrust/blob/main/docs/backend.md" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-3 w-3" />
                     Open Full Backend Documentation
                   </a>
@@ -210,7 +210,7 @@ console.log(data.reputationScore); // 0-100`}
                   Complete frontend documentation including components, hooks, and integration guides.
                 </p>
                 <Button asChild className="primary-btn font-mono text-xs mb-6">
-                  <a href="/docs/frontend.md" target="_blank" rel="noopener noreferrer">
+                  <a href="https://github.com/Zakariasisu5/BitTrust/blob/main/docs/frontend.md" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-3 w-3" />
                     Open Full Frontend Documentation
                   </a>
@@ -276,7 +276,7 @@ function MyComponent() {
                   Clarity smart contracts for on-chain reputation and payment protocol.
                 </p>
                 <Button asChild className="primary-btn font-mono text-xs mb-6">
-                  <a href="/docs/contract.md" target="_blank" rel="noopener noreferrer">
+                  <a href="https://github.com/Zakariasisu5/BitTrust/blob/main/docs/contract.md" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-3 w-3" />
                     Open Full Contract Documentation
                   </a>

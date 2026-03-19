@@ -143,7 +143,7 @@ Every score includes natural language explanations:
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/yourusername/BitTrust.git
+git clone https://github.com/Zakariasisu5/BitTrust.git
 cd BitTrust
 
 # Install backend dependencies
@@ -450,7 +450,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Contact & Links
 
 - **Live Demo**: [https://bittrust-five.vercel.app](https://bittrust-five.vercel.app)
-- **GitHub**: [https://github.com/yourusername/BitTrust](https://github.com/yourusername/BitTrust)
+- **GitHub**: [https://github.com/Zakariasisu5/BitTrust](https://github.com/Zakariasisu5/BitTrust)
 - **Documentation**: [docs/](docs/)
 - **Twitter**: [@BitTrustProtocol](#)
 - **Discord**: [Join our community](#)
