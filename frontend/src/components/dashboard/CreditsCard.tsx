@@ -123,6 +123,21 @@ export const CreditsCard = ({ address, onSuccess }: CreditsCardProps) => {
 
         {/* Buy buttons */}
         <div className="space-y-2">
+          {!hasUsdc && !usdcLoading && (
+            <div className="rounded border border-amber-500/30 bg-amber-500/10 px-3 py-2 mb-2">
+              <p className="text-[10px] text-amber-400 font-mono text-center mb-2">
+                ⚠️ No USDCx balance detected
+              </p>
+              <Link href="/settings">
+                <Button
+                  size="sm"
+                  className="w-full font-mono text-xs bg-amber-600 hover:bg-amber-700 text-white"
+                >
+                  Get Test Tokens →
+                </Button>
+              </Link>
+            </div>
+          )}
           <Button
             size="sm"
             className="primary-btn w-full font-mono text-xs"
@@ -139,16 +154,9 @@ export const CreditsCard = ({ address, onSuccess }: CreditsCardProps) => {
             disabled={buyDisabled}
             onClick={() => handleBuyCredits(String(QUERY_PRICE * 10), "10 credits")}
           >
+            {isBuying ? <Loader2 className="h-3 w-3 animate-spin mr-2" /> : null}
             Buy 10 Credits (10 USDCx)
           </Button>
-          {!hasUsdc && !usdcLoading && (
-            <p className="text-[10px] text-amber-500/80 font-mono text-center">
-              No USDCx.{" "}
-              <Link href="/settings" className="underline hover:text-amber-400">
-                Claim test tokens →
-              </Link>
-            </p>
-          )}
         </div>
       </CardContent>
     </Card>

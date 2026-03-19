@@ -5,15 +5,10 @@
 
 (define-constant ERR-NOT-AUTHORIZED (err u101))
 (define-constant ERR-INSUFFICIENT-FUNDS (err u201))
-(define-constant ERR-INVALID-TOKEN (err u202))
 
 (define-constant CONTRACT-OWNER tx-sender)
 (define-constant PROTOCOL-TREASURY tx-sender) ;; Where the fees go
 (define-constant QUERY-PRICE u1000000) ;; 1.00 Token (assuming 6 decimals)
-
-;; [SECURITY]: Hardcode the exact token contract - accept to prevent Trait Spoofing.
-;; Must match the deployed usdcx-mock contract (same deployer as this contract).
-(define-constant ACCEPTED-TOKEN 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.usdcx-mock)
 
 ;; Maps
 (define-map agent-credits principal uint)
@@ -47,9 +42,6 @@
         (current-credits (default-to u0 (map-get? agent-credits tx-sender)))
         (credits-to-add (/ amount QUERY-PRICE))
     )
-        ;; [SECURITY]: Ensure the provided token is exactly the one we trust
-        (asserts! (is-eq (contract-of payment-token) ACCEPTED-TOKEN) ERR-INVALID-TOKEN)
-
         ;; 1. Transfer USDCx to the protocol treasury
         (try! (contract-call? payment-token transfer amount tx-sender PROTOCOL-TREASURY none))
         
