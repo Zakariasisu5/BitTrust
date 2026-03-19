@@ -15,19 +15,36 @@ const logger_1 = require("./utils/logger");
 const app = (0, express_1.default)();
 app.set("trust proxy", 1);
 app.use((0, helmet_1.default)());
+const rawOrigin = env_1.env.frontendUrl ?? "*";
+const allowedOrigins = rawOrigin === "*"
+    ? ["*"]
+    : rawOrigin.split(",").map((o) => {
+        try {
+            return new URL(o.trim()).origin;
+        }
+        catch {
+            return o.trim();
+        }
+    });
 const corsOptions = {
-    origin: env_1.env.frontendUrl ?? "*",
+    origin: (origin, callback) => {
+        if (!origin)
+            return callback(null, true);
+        if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
+    credentials: true,
 };
 app.use((0, cors_1.default)(corsOptions));
 app.use((0, compression_1.default)());
 app.use(express_1.default.json());
-// Logging
 app.use((0, morgan_1.default)(env_1.env.nodeEnv === "production" ? "combined" : "dev", {
     stream: {
         write: (msg) => logger_1.logger.info(msg.trim()),
     },
 }));
-// Rate limiting
 const limiter = (0, express_rate_limit_1.rateLimit)({
     windowMs: 15 * 60 * 1000,
     limit: 300,
@@ -35,27 +52,15 @@ const limiter = (0, express_rate_limit_1.rateLimit)({
     legacyHeaders: false,
 });
 app.use(limiter);
-// Health check
 app.get("/health", (_req, res) => {
     res.json({ status: "ok", env: env_1.env.nodeEnv });
 });
-// Mount BitTrust reputation routes
 app.use("/api", reputationRoutes_1.default);
-// 🔹 Temporary POST test for debugging
-app.post("/api/test-post", (req, res) => {
-    logger_1.logger.info("POST /api/test-post hit", { body: req.body });
-    res.json({
-        message: "POST route works!",
-        received: req.body,
-    });
-});
-// 404 handler
 app.use((req, res) => {
     res.status(404).json({
         error: { message: "Not Found", path: req.path },
     });
 });
-// Global error handler
 app.use((err, _req, res, _next) => {
     logger_1.logger.error("Unhandled error", { error: String(err) });
     const status = err?.statusCode && Number.isInteger(err.statusCode) ? err.statusCode : 500;
@@ -65,11 +70,9 @@ app.use((err, _req, res, _next) => {
         },
     });
 });
-// Start server
 const server = app.listen(env_1.env.port, () => {
     logger_1.logger.info(`BitTrust backend listening on port ${env_1.env.port}`);
 });
-// Handle port errors
 server.on("error", (err) => {
     if (err?.code === "EADDRINUSE") {
         logger_1.logger.error(`Port ${env_1.env.port} is already in use.`, {
@@ -78,7 +81,6 @@ server.on("error", (err) => {
         process.exit(1);
     }
 });
-// Graceful shutdown
 const shutdown = (signal) => {
     logger_1.logger.info(`Received ${signal}, shutting down gracefully...`);
     server.close(() => {
