@@ -7,7 +7,7 @@
 
 > **Bringing Credit Scores to Bitcoin** - A decentralized reputation oracle that enables AI agents and DeFi protocols to make risk-aware decisions on the Bitcoin ecosystem.
 
-🔗 **[Live Demo](https://bittrust-five.vercel.app)** | 📚 **[Documentation](docs/)** | 🎥 **[Video Demo](#)** | 🏗️ **[Architecture](#architecture)**
+🔗 **[Live Demo](https://bittrust-five.vercel.app)** | 📚 **[Documentation](docs/)** | 🎥 **[Video Demo](https://youtu.be/iRHCpNErJtw)** | 🏗️ **[Architecture](#architecture)**
 
 ---
 
@@ -88,6 +88,17 @@ The Bitcoin and Stacks ecosystems are growing rapidly, but they lack a fundament
                     │  (Settlement)    │
                     └──────────────────┘
 ```
+
+---
+
+## 🎥 Demo Video
+
+Watch BitTrust in action - see how reputation scoring, identity verification, and the x402 payment protocol work together:
+
+[![BitTrust Demo](https://img.youtube.com/vi/iRHCpNErJtw/maxresdefault.jpg)](https://youtu.be/iRHCpNErJtw)
+
+**[▶️ Watch Full Demo on YouTube](https://youtu.be/iRHCpNErJtw)**
+
 ---
 
 ## 🧮 Reputation Scoring Model
@@ -438,7 +449,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Live Demo**: [https://bittrust-five.vercel.app](https://bittrust-five.vercel.app)
 - **GitHub**: [https://github.com/Zakariasisu5/BitTrust](https://github.com/Zakariasisu5/BitTrust)
 - **Documentation**: [docs/](docs/)
-- **Twitter**: [@BitTrustProtocol](#)
+- **Video Demo**: [https://youtu.be/iRHCpNErJtw](https://youtu.be/iRHCpNErJtw)
+- **Twitter**: [@BitTrustProtoco](https://x.com/BitTrustProtoco)
 - **Discord**: [Join our community](#)
 
 ---
@@ -449,6 +461,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ⭐ Star us on GitHub if you find this project interesting!
 
-[Live Demo](https://bittrust-five.vercel.app) • [Documentation](docs/) • [API Docs](#api-documentation) • [Roadmap](#roadmap)
+[Live Demo](https://bittrust-five.vercel.app) • [Documentation](docs/) • [Video Demo](https://youtu.be/iRHCpNErJtw) • [Twitter](https://x.com/BitTrustProtoco)
 
 </div>

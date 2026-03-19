@@ -128,15 +128,15 @@ console.log(data.reputationScore); // 0-100`}
 
               <div className="flex gap-4">
                 <Button asChild className="primary-btn font-mono text-xs">
-                  <a href="https://bittrust-backend.onrender.com/health" target="_blank" rel="noopener noreferrer">
+                  <a href="https://youtu.be/iRHCpNErJtw" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-3 w-3" />
-                    API Health Check
+                    Watch Demo Video
                   </a>
                 </Button>
                 <Button asChild variant="outline" className="secondary-btn border-slate-700 font-mono text-xs">
-                  <a href="https://github.com/Zakariasisu5/BitTrust" target="_blank" rel="noopener noreferrer">
+                  <a href="https://x.com/BitTrustProtoco" target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="mr-2 h-3 w-3" />
-                    View Source Code
+                    Follow on Twitter
                   </a>
                 </Button>
               </div>
