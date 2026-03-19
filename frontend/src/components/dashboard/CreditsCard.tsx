@@ -35,11 +35,17 @@ export const CreditsCard = ({ address, onSuccess }: CreditsCardProps) => {
         setIsBuying(false);
         toast({
           title: "Credits Purchased",
-          description: `${label} added. Tx: ${data.txId?.slice(0, 8)}...`,
+          description: `${label} added. Tx: ${data.txId?.slice(0, 8)}... - Waiting for confirmation...`,
         });
         onSuccess?.();
-        // Wait for blockchain confirmation before refreshing
-        setTimeout(() => refresh(), 3000);
+        // Wait longer for blockchain confirmation (testnet can be slow)
+        setTimeout(() => {
+          refresh();
+          toast({
+            title: "Balance Updated",
+            description: "Credit balance refreshed from blockchain.",
+          });
+        }, 10000); // 10 seconds for testnet
       },
       () => {
         setIsBuying(false);
@@ -149,6 +155,13 @@ export const CreditsCard = ({ address, onSuccess }: CreditsCardProps) => {
               </Link>
             </div>
           )}
+          {isBuying && (
+            <div className="rounded border border-blue-500/30 bg-blue-500/10 px-3 py-2 mb-2">
+              <p className="text-[10px] text-blue-400 font-mono text-center">
+                ⏳ Transaction pending... Balance will update in ~10s
+              </p>
+            </div>
+          )}
           <Button
             size="sm"
             className="primary-btn w-full font-mono text-xs"
@@ -168,6 +181,9 @@ export const CreditsCard = ({ address, onSuccess }: CreditsCardProps) => {
             {isBuying ? <Loader2 className="h-3 w-3 animate-spin mr-2" /> : null}
             Buy 10 Credits (10 USDCx)
           </Button>
+          <p className="text-[10px] text-slate-600 font-mono text-center">
+            💡 Tip: Click refresh button (🔄) if balance doesn't update
+          </p>
         </div>
       </CardContent>
     </Card>

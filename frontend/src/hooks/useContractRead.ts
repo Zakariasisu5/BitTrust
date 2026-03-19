@@ -114,8 +114,9 @@ export function useCreditsBalance(address: string | null, refreshTrigger?: numbe
           const innerValue = cvToValue((cv as ResponseOkCV).value);
           finalValue = typeof innerValue === "bigint" ? Number(innerValue) : Number(innerValue ?? 0);
         } else if (cv.type === "err") {
-          console.error("Contract returned error:", cvToValue((cv as ResponseErrorCV).value));
+          console.error("[useCreditsBalance] Contract error:", cvToValue((cv as ResponseErrorCV).value));
         } else {
+          // Plain uint response
           const val = cvToValue(cv);
           finalValue = typeof val === "bigint" ? Number(val) : Number(val ?? 0);
         }
