@@ -9,7 +9,7 @@ import { useCreditsBalance, useUsdcBalance } from "@/hooks/useContractRead";
 import { buyCredits } from "@/lib/contract-calls";
 import { userSession } from "@/context/WalletContext";
 import { QUERY_PRICE } from "@/lib/contracts";
-import { Coins, Loader2, Zap, AlertCircle } from "lucide-react";
+import { Coins, Loader2, Zap, AlertCircle, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 interface CreditsCardProps {
@@ -38,7 +38,8 @@ export const CreditsCard = ({ address, onSuccess }: CreditsCardProps) => {
           description: `${label} added. Tx: ${data.txId?.slice(0, 8)}...`,
         });
         onSuccess?.();
-        refresh();
+        // Wait for blockchain confirmation before refreshing
+        setTimeout(() => refresh(), 3000);
       },
       () => {
         setIsBuying(false);
@@ -80,11 +81,21 @@ export const CreditsCard = ({ address, onSuccess }: CreditsCardProps) => {
           <Coins className="h-4 w-4 text-amber-500" />
           [API_CREDITS_x402]
         </CardTitle>
-        {error && (
-          <span className="text-[10px] text-red-500 font-mono flex items-center gap-1">
-            <AlertCircle className="h-3 w-3" /> CONTRACT_ERR
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {error && (
+            <span className="text-[10px] text-red-500 font-mono flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" /> CONTRACT_ERR
+            </span>
+          )}
+          <button
+            onClick={refresh}
+            disabled={isLoading || usdcLoading}
+            className="text-slate-500 hover:text-amber-500 transition-colors disabled:opacity-50"
+            title="Refresh balances"
+          >
+            <RefreshCw className={`h-3 w-3 ${isLoading || usdcLoading ? "animate-spin" : ""}`} />
+          </button>
+        </div>
       </CardHeader>
       <CardContent className="relative z-10 space-y-4">
         {/* Credit balance */}

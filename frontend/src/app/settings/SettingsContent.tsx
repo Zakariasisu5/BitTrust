@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Loader2, Globe, Shield, Bell, AlertCircle, Coins } from "lucide-react";
+import { Save, Loader2, Globe, Shield, Bell, AlertCircle, Coins, RefreshCw } from "lucide-react";
 import { useWallet } from "@/context/WalletContext";
 import { useUsdcBalance } from "@/hooks/useContractRead";
 import { mintTestUsdc } from "@/lib/contract-calls";
@@ -20,7 +20,8 @@ export function SettingsContent() {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
-  const { displayBalance: usdcBalance, isLoading: usdcLoading } = useUsdcBalance(address ?? null);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { displayBalance: usdcBalance, isLoading: usdcLoading } = useUsdcBalance(address ?? null, refreshKey);
 
   const [isPublic, setIsPublic] = useState(true);
   const [x402Auto, setX402Auto] = useState(false);
@@ -40,6 +41,8 @@ export function SettingsContent() {
           title: "Test USDC Minted",
           description: `100 USDCx added. Tx: ${data.txId?.slice(0, 8)}...`,
         });
+        // Trigger refresh after successful mint
+        setTimeout(() => setRefreshKey((k) => k + 1), 2000);
       },
       () => {
         setIsMinting(false);
@@ -95,14 +98,25 @@ export function SettingsContent() {
               <p className="text-2xl font-bold text-amber-500 font-mono">{usdcLoading ? "..." : usdcBalance.toFixed(2)}</p>
               <p className="text-[10px] text-slate-500 font-mono mt-1">USDCx Balance</p>
             </div>
-            <Button
-              onClick={handleMintTestUsdc}
-              disabled={isMinting || !address}
-              className="primary-btn font-mono text-xs"
-            >
-              {isMinting ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : null}
-              Mint 100 USDCx
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setRefreshKey((k) => k + 1)}
+                disabled={usdcLoading}
+                variant="outline"
+                size="sm"
+                className="secondary-btn font-mono text-xs border-slate-700"
+              >
+                <RefreshCw className={`h-3 w-3 ${usdcLoading ? "animate-spin" : ""}`} />
+              </Button>
+              <Button
+                onClick={handleMintTestUsdc}
+                disabled={isMinting || !address}
+                className="primary-btn font-mono text-xs"
+              >
+                {isMinting ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : null}
+                Mint 100 USDCx
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
