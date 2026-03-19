@@ -88,20 +88,6 @@ The Bitcoin and Stacks ecosystems are growing rapidly, but they lack a fundament
                     │  (Settlement)    │
                     └──────────────────┘
 ```
-
----
-
-## 🎨 Screenshots
-
-### Dashboard - Real-Time Reputation Monitoring
-![Dashboard](https://via.placeholder.com/800x450/0a0f1e/F7931A?text=Dashboard+Screenshot)
-
-### Identity Verification - Boost Your Score
-![Verification](https://via.placeholder.com/800x450/0a0f1e/5546FF?text=Identity+Verification)
-
-### Leaderboard - Network Rankings
-![Leaderboard](https://via.placeholder.com/800x450/0a0f1e/10B981?text=Leaderboard)
-
 ---
 
 ## 🧮 Reputation Scoring Model
