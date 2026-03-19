@@ -7,6 +7,7 @@ import {
   principalCV,
   type ClarityValue,
   type ResponseOkCV,
+  type ResponseErrorCV,
 } from "@stacks/transactions";
 import { CONTRACTS, NETWORK, USDCX_DECIMALS } from "@/lib/contracts";
 import type { ReputationScore } from "@/types/contracts";
@@ -106,9 +107,20 @@ export function useCreditsBalance(address: string | null, refreshTrigger?: numbe
     })
       .then((cv) => {
         if (cancelled) return;
-        const val = cvToValue(cv);
-        const n = typeof val === "bigint" ? Number(val) : Number(val ?? 0);
-        setBalance(n);
+        // Handle response - payment contract returns plain uint
+        let finalValue = 0;
+        
+        if (cv.type === "ok") {
+          const innerValue = cvToValue((cv as ResponseOkCV).value);
+          finalValue = typeof innerValue === "bigint" ? Number(innerValue) : Number(innerValue ?? 0);
+        } else if (cv.type === "err") {
+          console.error("Contract returned error:", cvToValue((cv as ResponseErrorCV).value));
+        } else {
+          const val = cvToValue(cv);
+          finalValue = typeof val === "bigint" ? Number(val) : Number(val ?? 0);
+        }
+        
+        setBalance(finalValue);
       })
       .catch((err) => {
         if (!cancelled) setError(err?.message ?? "Failed to fetch credits");
@@ -150,9 +162,24 @@ export function useUsdcBalance(address: string | null, refreshTrigger?: number) 
     })
       .then((cv) => {
         if (cancelled) return;
-        const val = cvToValue(cv);
-        if (typeof val === "bigint") setBalance(val);
-        else setBalance(BigInt(0));
+        // Handle (ok uint) response from SIP-010 get-balance
+        let finalValue: bigint = BigInt(0);
+        
+        if (cv.type === "ok") {
+          const innerValue = cvToValue((cv as ResponseOkCV).value);
+          if (typeof innerValue === "bigint") {
+            finalValue = innerValue;
+          }
+        } else if (cv.type === "err") {
+          console.error("Contract returned error:", cvToValue((cv as ResponseErrorCV).value));
+        } else {
+          const val = cvToValue(cv);
+          if (typeof val === "bigint") {
+            finalValue = val;
+          }
+        }
+        
+        setBalance(finalValue);
       })
       .catch((err) => {
         if (!cancelled) setError(err?.message ?? "Failed to fetch USDCx balance");
